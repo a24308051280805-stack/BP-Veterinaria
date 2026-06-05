@@ -3,849 +3,474 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="BP Veterinaria — Sistema Clínico Inteligente para gestión de pacientes, citas, inventario y finanzas.">
 <title>BP Veterinaria | Sistema Clínico</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
 <style>
-/* ── RESET & TOKENS ───────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root {
-  /* Brand */
-  --green:        #059669;
-  --green-mid:    #047857;
-  --green-dark:   #064e3b;
-  --green-glass:  rgba(5,150,105,0.12);
-  --green-glow:   rgba(5,150,105,0.35);
-  --amber:        #f59e0b;
-  --rose:         #f43f5e;
-  --rose-light:   rgba(244,63,94,0.1);
-  --blue:         #3b82f6;
-  --blue-light:   rgba(59,130,246,0.12);
-  /* Neutrals */
-  --ink:          #0d1117;
-  --ink-80:       rgba(13,17,23,0.8);
-  --paper:        #f5f7fa;
-  --white:        #ffffff;
-  --card:         #ffffff;
-  --border:       #e8ecf0;
-  --muted:        #8a95a3;
-  --subtle:       #b4bcc8;
-  --text:         #1e2533;
-  --text-med:     #4a5568;
-  /* UI */
-  --sidebar-w:    260px;
-  --topbar-h:     64px;
-  --radius-sm:    8px;
-  --radius:       14px;
-  --radius-lg:    20px;
-  --radius-xl:    28px;
-  --shadow-xs:    0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
-  --shadow-sm:    0 2px 8px rgba(0,0,0,0.07),0 1px 3px rgba(0,0,0,0.05);
-  --shadow-md:    0 8px 24px rgba(0,0,0,0.09),0 2px 6px rgba(0,0,0,0.05);
-  --shadow-lg:    0 20px 48px rgba(0,0,0,0.14),0 6px 16px rgba(0,0,0,0.08);
-  --transition:   0.2s cubic-bezier(0.4,0,0.2,1);
+  --green:#059669;--green-mid:#047857;--green-dark:#064e3b;
+  --green-glass:rgba(5,150,105,0.12);--green-glow:rgba(5,150,105,0.35);
+  --amber:#f59e0b;--rose:#f43f5e;--blue:#3b82f6;
+  --ink:#0d1117;--paper:#f5f7fa;--white:#ffffff;--card:#ffffff;
+  --border:#e8ecf0;--muted:#8a95a3;--subtle:#b4bcc8;
+  --text:#1e2533;--text-med:#4a5568;
+  --sidebar-w:260px;--topbar-h:64px;
+  --radius-sm:8px;--radius:14px;--radius-lg:20px;--radius-xl:28px;
+  --shadow-xs:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.07),0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md:0 8px 24px rgba(0,0,0,0.09),0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg:0 20px 48px rgba(0,0,0,0.14),0 6px 16px rgba(0,0,0,0.08);
+  --transition:0.2s cubic-bezier(0.4,0,0.2,1);
 }
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--paper);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+::-webkit-scrollbar-thumb:hover{background:var(--subtle);}
 
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  background: var(--paper);
-  color: var(--text);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  line-height: 1.5;
+/* ── AUTH SCREEN ── */
+#authScreen {
+  position:fixed;inset:0;z-index:1000;
+  background:linear-gradient(135deg,#0d1117 0%,#0f2027 40%,#064e3b 100%);
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;
 }
+#authScreen::before {
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 20%,rgba(5,150,105,0.18) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 80%,rgba(5,150,105,0.08) 0%,transparent 50%);
+  pointer-events:none;
+}
+.auth-card {
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:28px;
+  width:100%;max-width:420px;
+  padding:40px 36px;
+  box-shadow:0 32px 80px rgba(0,0,0,0.5);
+  position:relative;
+}
+.auth-brand {
+  display:flex;align-items:center;gap:14px;margin-bottom:32px;
+}
+.auth-brand-icon {
+  width:52px;height:52px;border-radius:16px;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;
+  box-shadow:0 8px 24px var(--green-glow);
+}
+.auth-brand-text h1 {
+  font-family:'Fraunces',Georgia,serif;
+  font-size:1.5rem;font-weight:700;color:#fff;letter-spacing:-0.02em;
+}
+.auth-brand-text h1 em{font-style:italic;color:#34d399;}
+.auth-brand-text span{font-size:0.7rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);}
 
-/* ── SCROLLBAR ─────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--subtle); }
+.auth-tabs {
+  display:flex;background:rgba(255,255,255,0.06);
+  border-radius:12px;padding:4px;gap:4px;margin-bottom:28px;
+}
+.auth-tab {
+  flex:1;padding:9px;border:none;background:transparent;
+  border-radius:9px;cursor:pointer;font-size:0.85rem;font-weight:600;
+  color:rgba(255,255,255,0.4);transition:all var(--transition);
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+.auth-tab.active{background:rgba(5,150,105,0.3);color:#34d399;border:1px solid rgba(5,150,105,0.4);}
 
-/* ── SIDEBAR ─────────────────────────────────────── */
+.auth-form{display:flex;flex-direction:column;gap:14px;}
+.auth-field{display:flex;flex-direction:column;gap:6px;}
+.auth-field label{font-size:0.78rem;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:0.04em;}
+.auth-field label span{color:#f43f5e;margin-left:2px;}
+.auth-field input,.auth-field select {
+  padding:11px 14px;background:rgba(255,255,255,0.07);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:10px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;
+  color:#fff;outline:none;transition:all var(--transition);
+  appearance:none;
+}
+.auth-field input::placeholder{color:rgba(255,255,255,0.25);}
+.auth-field input:focus,.auth-field select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,0.2);}
+.auth-field select option{background:#0d1117;color:#fff;}
+
+.auth-btn {
+  padding:13px;background:linear-gradient(135deg,var(--green),var(--green-mid));
+  border:none;border-radius:12px;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:0.9rem;font-weight:700;cursor:pointer;
+  transition:all var(--transition);margin-top:4px;
+  box-shadow:0 4px 16px var(--green-glow);
+}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--green-glow);}
+.auth-btn:active{transform:translateY(0);}
+.auth-err{color:#fb7185;font-size:0.8rem;font-weight:600;text-align:center;padding:8px;background:rgba(244,63,94,0.1);border-radius:8px;border:1px solid rgba(244,63,94,0.2);}
+
+/* ── SIDEBAR ── */
 .sidebar {
-  position: fixed; top: 0; left: 0;
-  width: var(--sidebar-w); height: 100vh;
-  background: var(--ink);
-  display: flex; flex-direction: column;
-  z-index: 300;
-  overflow: hidden;
-  transition: transform var(--transition), width var(--transition);
+  position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;
+  background:var(--ink);display:flex;flex-direction:column;
+  z-index:300;overflow:hidden;transition:transform var(--transition),width var(--transition);
 }
-
-/* Texture overlay */
 .sidebar::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 2px,
-    rgba(255,255,255,0.012) 2px,
-    rgba(255,255,255,0.012) 4px
-  );
-  pointer-events: none;
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(255,255,255,0.012) 2px,rgba(255,255,255,0.012) 4px);
+  pointer-events:none;
 }
-
-/* Accent line */
 .sidebar::after {
-  content: '';
-  position: absolute; top: 0; right: 0;
-  width: 1px; height: 100%;
-  background: linear-gradient(to bottom, transparent, rgba(5,150,105,0.4), transparent);
-}
-
-.sidebar-header {
-  padding: 28px 22px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  flex-shrink: 0;
-}
-
-.brand {
-  display: flex; align-items: center; gap: 12px;
-}
-.brand-icon {
-  width: 40px; height: 40px; border-radius: 12px;
-  background: linear-gradient(135deg, var(--green), var(--green-dark));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.15rem; flex-shrink: 0;
-  box-shadow: 0 4px 12px var(--green-glow);
-}
-.brand-text h1 {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 1.25rem; font-weight: 700;
-  color: var(--white); line-height: 1.1;
-  letter-spacing: -0.01em;
-}
-.brand-text h1 em { font-style: italic; color: var(--green); }
-.brand-text span {
-  font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em;
-  text-transform: uppercase; color: rgba(255,255,255,0.35);
-  display: block; margin-top: 2px;
-}
-
-.sidebar-section-label {
-  padding: 20px 22px 8px;
-  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
-  text-transform: uppercase; color: rgba(255,255,255,0.25);
-}
-
-.sidebar-nav {
-  flex: 1; padding: 8px 12px;
-  overflow-y: auto; overflow-x: hidden;
-  display: flex; flex-direction: column; gap: 2px;
-}
-
-.nav-item {
-  display: flex; align-items: center; gap: 11px;
-  padding: 10px 12px; border-radius: var(--radius-sm);
-  border: none; background: none; cursor: pointer;
-  color: rgba(255,255,255,0.45);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.875rem; font-weight: 500;
-  transition: all var(--transition);
-  text-align: left; width: 100%;
-  position: relative; white-space: nowrap;
-}
-
-.nav-item:hover {
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.85);
-}
-
-.nav-item.active {
-  background: var(--green-glass);
-  color: #34d399;
-  border: 1px solid rgba(5,150,105,0.25);
-}
-
-.nav-item .nav-icon {
-  font-size: 1rem; min-width: 20px; text-align: center;
-  flex-shrink: 0;
-}
-
-.nav-item .nav-label { flex: 1; }
-
-.nav-badge {
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.5);
-  font-size: 0.68rem; font-weight: 700;
-  padding: 1px 6px; border-radius: 20px;
-  min-width: 18px; text-align: center;
-  flex-shrink: 0;
-}
-.nav-item.active .nav-badge {
-  background: rgba(52,211,153,0.18);
-  color: #34d399;
-}
-
-.sidebar-footer {
-  padding: 16px 22px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  flex-shrink: 0;
-}
-
-.user-card {
-  display: flex; align-items: center; gap: 10px;
-}
-.user-avatar {
-  width: 34px; height: 34px; border-radius: 10px;
-  background: linear-gradient(135deg, #2d7a4f, #14532d);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem; font-weight: 700; color: #6ee7b7;
-  flex-shrink: 0; border: 1px solid rgba(52,211,153,0.25);
-}
-.user-info { min-width: 0; }
-.user-info strong {
-  display: block; font-size: 0.78rem; font-weight: 600;
-  color: rgba(255,255,255,0.8); white-space: nowrap; overflow: hidden;
-  text-overflow: ellipsis;
-}
-.user-info span {
-  font-size: 0.68rem; color: rgba(255,255,255,0.3); letter-spacing: 0.02em;
-}
-
-/* ── MOBILE OVERLAY ─────────────────────────────── */
-.sidebar-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(4px);
-  z-index: 290;
-  transition: opacity var(--transition);
-}
-
-/* ── MAIN WRAPPER ────────────────────────────────── */
-.main-wrapper {
-  margin-left: var(--sidebar-w);
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  transition: margin-left var(--transition);
-}
-
-/* ── TOPBAR ──────────────────────────────────────── */
-.topbar {
-  height: var(--topbar-h);
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: saturate(180%) blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 32px;
-  display: flex; align-items: center; gap: 16px;
-  position: sticky; top: 0; z-index: 200;
-  box-shadow: var(--shadow-xs);
-}
-
-.menu-btn {
-  display: none; /* hidden on desktop */
-  width: 38px; height: 38px; border-radius: var(--radius-sm);
-  border: 1px solid var(--border); background: var(--white);
-  align-items: center; justify-content: center;
-  cursor: pointer; font-size: 1.1rem; color: var(--text-med);
-  transition: all var(--transition); flex-shrink: 0;
-}
-.menu-btn:hover { background: var(--paper); border-color: var(--subtle); }
-
-.topbar-title-wrap { flex: 1; min-width: 0; }
-.topbar-title {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 1.1rem; font-weight: 600; color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  line-height: 1.2;
-}
-.topbar-meta {
-  font-size: 0.75rem; color: var(--muted);
-  margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.topbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-
-.status-chip {
-  display: flex; align-items: center; gap: 7px;
-  background: rgba(5,150,105,0.08);
-  border: 1px solid rgba(5,150,105,0.2);
-  border-radius: 99px; padding: 5px 12px;
-}
-.status-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 0 2px rgba(5,150,105,0.25);
-  animation: statusPulse 2.5s infinite;
-}
-@keyframes statusPulse {
-  0%,100%{ box-shadow:0 0 0 2px rgba(5,150,105,0.25); }
-  50%{ box-shadow:0 0 0 5px rgba(5,150,105,0.08); }
-}
-.status-label { font-size: 0.75rem; font-weight: 600; color: var(--green-mid); }
-
-/* ── CONTENT ─────────────────────────────────────── */
-.content { padding: 28px 32px; flex: 1; }
-
-/* ── SECTIONS ────────────────────────────────────── */
-.section { display: none; }
-.section.active {
-  display: block;
-  animation: sectionIn 0.3s ease;
-}
-@keyframes sectionIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── PAGE HEADER ────────────────────────────────── */
-.page-header {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
-}
-.page-header-left h2 {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 1.65rem; font-weight: 700; color: var(--text);
-  letter-spacing: -0.02em; line-height: 1.1;
-}
-.page-header-left p {
-  font-size: 0.875rem; color: var(--muted); margin-top: 4px;
-}
-.page-header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-
-/* ── STATS GRID ──────────────────────────────────── */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.stat-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 22px;
-  box-shadow: var(--shadow-xs);
-  transition: all var(--transition);
-  position: relative;
-  overflow: hidden;
-}
-.stat-card::after {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-}
-.stat-card.green::after  { background: linear-gradient(90deg, var(--green), #34d399); }
-.stat-card.amber::after  { background: linear-gradient(90deg, var(--amber), #fcd34d); }
-.stat-card.rose::after   { background: linear-gradient(90deg, var(--rose), #fb7185); }
-.stat-card.blue::after   { background: linear-gradient(90deg, var(--blue), #93c5fd); }
-
-.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-
-.stat-top {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  margin-bottom: 14px;
-}
-.stat-icon {
-  width: 44px; height: 44px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem;
-}
-.stat-icon.green { background: rgba(5,150,105,0.1); }
-.stat-icon.amber { background: rgba(245,158,11,0.1); }
-.stat-icon.rose  { background: rgba(244,63,94,0.1); }
-.stat-icon.blue  { background: rgba(59,130,246,0.1); }
-
-.stat-trend {
-  font-size: 0.72rem; font-weight: 600; padding: 3px 8px;
-  border-radius: 20px; white-space: nowrap;
-}
-.trend-up      { background: #dcfce7; color: #166534; }
-.trend-neutral { background: var(--paper); color: var(--muted); }
-.trend-warn    { background: #fff7ed; color: #9a3412; }
-
-.stat-value {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 2rem; font-weight: 700; color: var(--text);
-  letter-spacing: -0.03em; line-height: 1;
-  margin-bottom: 4px;
-}
-.stat-label {
-  font-size: 0.8rem; color: var(--muted); font-weight: 500;
-}
-.stat-sub {
-  font-size: 0.72rem; color: var(--subtle);
-  margin-top: 6px;
-}
-
-/* ── DASHBOARD GRID ──────────────────────────────── */
-.dash-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.dash-panel {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-xs);
-}
-
-.panel-header {
-  padding: 18px 22px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
-}
-.panel-header-icon {
-  width: 30px; height: 30px; border-radius: 8px;
-  background: var(--paper);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.9rem;
-}
-.panel-header h3 {
-  font-size: 0.88rem; font-weight: 700; color: var(--text);
-  flex: 1;
-}
-.panel-header .panel-count {
-  font-size: 0.72rem; font-weight: 700; padding: 2px 8px;
-  border-radius: 20px; background: var(--paper); color: var(--muted);
-}
-
-.panel-body { padding: 16px 22px; max-height: 280px; overflow-y: auto; }
-
-.activity-item {
-  display: flex; gap: 12px; padding: 10px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.04);
-  align-items: flex-start;
-}
-.activity-item:last-child { border-bottom: none; }
-
-.activity-bullet {
-  width: 7px; height: 7px; border-radius: 50%;
-  margin-top: 6px; flex-shrink: 0;
-}
-.bullet-green { background: var(--green); }
-.bullet-rose  { background: var(--rose); }
-.bullet-amber { background: var(--amber); }
-
-.activity-main { font-size: 0.85rem; font-weight: 500; color: var(--text); }
-.activity-sub  { font-size: 0.77rem; color: var(--muted); margin-top: 2px; }
-
-.panel-empty {
-  text-align: center; padding: 32px 20px;
-  font-size: 0.85rem; color: var(--muted);
-}
-.panel-empty-icon { font-size: 1.8rem; margin-bottom: 8px; opacity: 0.4; }
-
-/* ── CARD TABLE ──────────────────────────────────── */
-.card-table {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-xs);
-}
-
-.card-table-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center;
-  gap: 16px; flex-wrap: wrap;
-}
-.card-table-header-left { flex: 1; min-width: 0; }
-.card-table-header h2 {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 1.1rem; font-weight: 700; color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.card-table-header p { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
-
-.header-actions {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-}
-
-/* ── SEARCH BAR ──────────────────────────────────── */
-.search-bar {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  transition: all var(--transition);
-}
-.search-bar:focus-within {
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
-  background: var(--white);
-}
-.search-bar .search-icon { color: var(--subtle); font-size: 0.85rem; flex-shrink: 0; }
-.search-bar input {
-  border: none; background: none; outline: none;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.85rem; color: var(--text); width: 160px;
-}
-.search-bar input::placeholder { color: var(--subtle); }
-
-/* ── TABLE ───────────────────────────────────────── */
-.table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-table {
-  width: 100%; border-collapse: collapse;
-  min-width: 540px;
-}
-
-thead tr {
-  background: var(--paper);
-  border-bottom: 1px solid var(--border);
-}
-
-th {
-  padding: 11px 16px;
-  text-align: left;
-  font-size: 0.7rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.07em;
-  color: var(--subtle); white-space: nowrap;
-  user-select: none;
-}
-
-td {
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(0,0,0,0.04);
-  font-size: 0.875rem;
-  vertical-align: middle;
-}
-
-tbody tr { transition: background var(--transition); }
-tbody tr:hover { background: rgba(5,150,105,0.025); }
-tbody tr:last-child td { border-bottom: none; }
-
-.cell-main { font-weight: 600; color: var(--text); }
-.cell-sub  { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-
-/* ── BADGES ──────────────────────────────────────── */
-.badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 3px 9px; border-radius: 20px;
-  font-size: 0.72rem; font-weight: 700; white-space: nowrap;
-  letter-spacing: 0.01em;
-}
-.badge-dot {
-  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
-}
-.badge-green  { background: #dcfce7; color: #166534; }
-.badge-green .badge-dot  { background: #16a34a; }
-.badge-amber  { background: #fef3c7; color: #92400e; }
-.badge-amber .badge-dot  { background: #d97706; }
-.badge-rose   { background: #ffe4e6; color: #9f1239; }
-.badge-rose .badge-dot   { background: #e11d48; }
-.badge-blue   { background: #dbeafe; color: #1e3a8a; }
-.badge-blue .badge-dot   { background: #2563eb; }
-.badge-slate  { background: var(--paper); color: var(--text-med); }
-.badge-slate .badge-dot  { background: var(--subtle); }
-
-/* ── BUTTONS ─────────────────────────────────────── */
-.btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 9px 18px; border-radius: var(--radius-sm);
-  border: none; font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.845rem; font-weight: 600; cursor: pointer;
-  transition: all var(--transition); white-space: nowrap;
-  text-decoration: none; line-height: 1;
-}
-
-.btn-primary {
-  background: var(--green);
-  color: var(--white);
-  box-shadow: 0 2px 8px var(--green-glow);
-}
-.btn-primary:hover {
-  background: var(--green-mid);
-  transform: translateY(-1px);
-  box-shadow: 0 5px 14px var(--green-glow);
-}
-.btn-primary:active { transform: translateY(0); }
-
-.btn-ghost {
-  background: var(--white);
-  color: var(--text-med);
-  border: 1px solid var(--border);
-}
-.btn-ghost:hover {
-  background: var(--paper);
-  border-color: var(--subtle);
-}
-
-.btn-icon {
-  width: 32px; height: 32px; padding: 0; border-radius: 8px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border: none; cursor: pointer; font-size: 0.8rem;
-  transition: all var(--transition);
-}
-.btn-edit   { background: rgba(5,150,105,0.08); color: var(--green); }
-.btn-edit:hover   { background: rgba(5,150,105,0.18); }
-.btn-delete { background: rgba(244,63,94,0.08); color: var(--rose); }
-.btn-delete:hover { background: rgba(244,63,94,0.18); }
-
-.action-cell { display: flex; gap: 6px; align-items: center; }
-
-/* ── EMPTY STATE ─────────────────────────────────── */
-.empty-state {
-  text-align: center; padding: 64px 24px; color: var(--muted);
-}
-.empty-icon { font-size: 2.8rem; margin-bottom: 14px; opacity: 0.35; }
-.empty-state h3 {
-  font-size: 0.95rem; font-weight: 700; color: var(--text-med);
-  margin-bottom: 6px;
-}
-.empty-state p { font-size: 0.83rem; max-width: 240px; margin: 0 auto; }
-
-/* ── MODAL ───────────────────────────────────────── */
-.modal {
-  display: none; position: fixed; inset: 0;
-  background: rgba(13,17,23,0.6);
-  backdrop-filter: blur(8px);
-  z-index: 500;
-  align-items: center; justify-content: center;
-  padding: 16px;
-}
-.modal.open { display: flex; }
-
-.modal-content {
-  background: var(--white); width: 100%; max-width: 520px;
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  animation: modalIn 0.25s cubic-bezier(0.34,1.4,0.64,1);
-  max-height: 90vh; overflow-y: auto;
-  border: 1px solid var(--border);
-}
-@keyframes modalIn {
-  from { opacity:0; transform:scale(0.9) translateY(16px); }
-  to   { opacity:1; transform:scale(1) translateY(0); }
-}
-
-.modal-header {
-  padding: 24px 28px 0;
-  display: flex; align-items: center; gap: 12px;
-}
-.modal-header-icon {
-  width: 38px; height: 38px; border-radius: 10px;
-  background: var(--green-glass); color: var(--green);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; flex-shrink: 0;
-}
-.modal-header-text { flex: 1; }
-.modal-header h2 {
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 1.15rem; font-weight: 700; color: var(--text);
-}
-.modal-header p { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
-.modal-close {
-  width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border);
-  background: var(--white); cursor: pointer; font-size: 0.9rem;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-med); transition: all var(--transition);
-  flex-shrink: 0;
-}
-.modal-close:hover { background: var(--paper); border-color: var(--subtle); }
-
-.modal-divider { height: 1px; background: var(--border); margin: 18px 0 0; }
-
-.modal-body { padding: 22px 28px 28px; }
-
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-grid .full { grid-column: 1 / -1; }
-
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-group label {
-  font-size: 0.78rem; font-weight: 700; color: var(--text-med);
-  letter-spacing: 0.02em;
-}
-.form-group label span { color: var(--rose); margin-left: 2px; }
-
-.form-group input, .form-group select, .form-group textarea {
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.875rem; color: var(--text);
-  outline: none; background: var(--white);
-  transition: all var(--transition);
-}
-.form-group input:focus, .form-group select:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
-}
-.form-group input::placeholder { color: var(--subtle); }
-
-.form-group select {
-  appearance: none; cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238a95a3' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 16px;
-  padding-right: 36px;
-}
-
-.modal-footer {
-  display: flex; justify-content: flex-end; gap: 10px;
-  padding-top: 20px; border-top: 1px solid var(--border);
-  margin-top: 20px;
-}
-
-/* ── STOCK ALERTS ────────────────────────────────── */
-.stock-critical { color: var(--rose); font-weight: 700; }
-.stock-low      { color: var(--amber); font-weight: 600; }
-.stock-ok       { color: var(--green); font-weight: 600; }
-
-/* ── TOAST ───────────────────────────────────────── */
-.toast-container {
-  position: fixed; bottom: 24px; right: 24px; z-index: 900;
-  display: flex; flex-direction: column; gap: 10px;
-  pointer-events: none;
-}
-.toast {
-  background: var(--ink);
-  color: var(--white);
-  padding: 12px 18px; border-radius: var(--radius);
-  font-size: 0.85rem; font-weight: 500;
-  box-shadow: var(--shadow-lg);
-  display: flex; align-items: center; gap: 10px;
-  animation: toastIn 0.35s cubic-bezier(0.34,1.4,0.64,1);
-  pointer-events: all; max-width: 320px;
-  border-left: 3px solid var(--green);
-}
-.toast.error { border-left-color: var(--rose); }
-.toast.warn  { border-left-color: var(--amber); }
-@keyframes toastIn {
-  from { opacity:0; transform:translateX(24px); }
-  to   { opacity:1; transform:translateX(0); }
-}
-
-/* ── LOADING SKELETON ────────────────────────────── */
-.skeleton {
-  background: linear-gradient(90deg, var(--paper) 25%, var(--border) 50%, var(--paper) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 6px; display: inline-block;
-}
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ── RESPONSIVE ──────────────────────────────────── */
-
-/* Tablet: collapse sidebar to icons */
-@media (max-width: 1024px) {
-  :root { --sidebar-w: 64px; }
-
-  .brand-text,
-  .nav-item .nav-label,
-  .nav-badge,
-  .sidebar-footer .user-info,
-  .sidebar-section-label { display: none; }
-
-  .sidebar-header { padding: 18px 12px; justify-content: center; }
-  .brand { justify-content: center; }
-  .brand-icon { width: 38px; height: 38px; }
-
-  .nav-item {
-    justify-content: center;
-    padding: 12px 0;
-  }
-  .nav-item .nav-icon { font-size: 1.15rem; }
-
-  .sidebar-footer { padding: 12px 8px; }
-  .user-card { justify-content: center; }
-
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .dash-grid  { grid-template-columns: 1fr; }
-
-  .topbar { padding: 0 20px; }
-  .content { padding: 24px 20px; }
-}
-
-/* Mobile: sidebar becomes drawer */
-@media (max-width: 768px) {
-  :root { --sidebar-w: 260px; }
-
-  .sidebar {
-    transform: translateX(-100%);
-    width: var(--sidebar-w);
-  }
-  .sidebar.open { transform: translateX(0); }
-  .sidebar-overlay.open { display: block; }
-
-  /* show all labels again on mobile drawer */
-  .brand-text,
-  .nav-item .nav-label,
-  .sidebar-section-label,
-  .sidebar-footer .user-info { display: block; }
-  .nav-badge { display: inline-flex; }
-  .sidebar-header { padding: 24px 22px 18px; }
-  .nav-item { justify-content: flex-start; padding: 10px 12px; }
-
-  .main-wrapper { margin-left: 0 !important; }
-  .menu-btn { display: flex; }
-
-  .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .dash-grid  { grid-template-columns: 1fr; }
-
-  .content { padding: 20px 16px; }
-  .topbar  { padding: 0 16px; }
-  .topbar-title { font-size: 1rem; }
-
-  .card-table-header { gap: 12px; }
-  .header-actions { width: 100%; }
-  .search-bar { flex: 1; }
-  .search-bar input { width: 100%; }
-
-  .page-header { gap: 12px; }
-  .page-header-right { width: 100%; }
-
-  .stat-value { font-size: 1.6rem; }
-  .status-label { display: none; }
-
-  .form-grid { grid-template-columns: 1fr; }
-  .form-grid .full { grid-column: 1; }
-
-  .table-wrapper { font-size: 0.82rem; }
-  td, th { padding: 10px 12px; }
-
-  .toast-container { bottom: 16px; right: 12px; left: 12px; }
-  .toast { max-width: 100%; }
-}
-
-@media (max-width: 480px) {
-  .stats-grid { grid-template-columns: 1fr; }
-  .stat-card { padding: 16px; }
-  .stat-value { font-size: 1.4rem; }
-  .content { padding: 16px 12px; }
-}
-
-/* Focus visible for accessibility */
-:focus-visible {
-  outline: 2px solid var(--green);
-  outline-offset: 2px;
-}
-
-/* Reduce motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
+  content:'';position:absolute;top:0;right:0;width:1px;height:100%;
+  background:linear-gradient(to bottom,transparent,rgba(5,150,105,0.4),transparent);
+}
+.sidebar-header{padding:28px 22px 20px;border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0;}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green-dark));display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;box-shadow:0 4px 12px var(--green-glow);}
+.brand-text h1{font-family:'Fraunces',Georgia,serif;font-size:1.25rem;font-weight:700;color:var(--white);line-height:1.1;letter-spacing:-0.01em;}
+.brand-text h1 em{font-style:italic;color:var(--green);}
+.brand-text span{font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);display:block;margin-top:2px;}
+.sidebar-section-label{padding:20px 22px 8px;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.sidebar-nav{flex:1;padding:8px 12px;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:2px;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--radius-sm);border:none;background:none;cursor:pointer;color:rgba(255,255,255,0.45);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.875rem;font-weight:500;transition:all var(--transition);text-align:left;width:100%;position:relative;white-space:nowrap;}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.85);}
+.nav-item.active{background:var(--green-glass);color:#34d399;border:1px solid rgba(5,150,105,0.25);}
+.nav-item .nav-icon{font-size:1rem;min-width:20px;text-align:center;flex-shrink:0;}
+.nav-item .nav-label{flex:1;}
+.nav-badge{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);font-size:0.68rem;font-weight:700;padding:1px 6px;border-radius:20px;min-width:18px;text-align:center;flex-shrink:0;}
+.nav-item.active .nav-badge{background:rgba(52,211,153,0.18);color:#34d399;}
+.sidebar-footer{padding:16px 22px;border-top:1px solid rgba(255,255,255,0.06);flex-shrink:0;}
+.user-card{display:flex;align-items:center;gap:10px;}
+.user-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2d7a4f,#14532d);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;color:#6ee7b7;flex-shrink:0;border:1px solid rgba(52,211,153,0.25);}
+.user-info{min-width:0;}
+.user-info strong{display:block;font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-info span{font-size:0.68rem;color:rgba(255,255,255,0.3);letter-spacing:0.02em;}
+
+/* Role badge en sidebar */
+.role-badge-sidebar {
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 8px;border-radius:20px;font-size:0.62rem;font-weight:700;letter-spacing:0.05em;margin-top:4px;
+}
+.role-admin{background:rgba(245,158,11,0.2);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);}
+.role-user{background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.25);}
+
+.logout-btn {
+  display:flex;align-items:center;gap:8px;width:100%;padding:9px 10px;
+  border:none;background:rgba(244,63,94,0.08);color:rgba(244,63,94,0.7);
+  border-radius:var(--radius-sm);cursor:pointer;font-size:0.8rem;font-weight:600;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:all var(--transition);margin-top:10px;
+}
+.logout-btn:hover{background:rgba(244,63,94,0.18);color:#f43f5e;}
+
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);z-index:290;transition:opacity var(--transition);}
+
+/* ── MAIN WRAPPER ── */
+.main-wrapper{margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column;transition:margin-left var(--transition);}
+
+/* ── TOPBAR ── */
+.topbar{height:var(--topbar-h);background:rgba(255,255,255,0.9);backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow-xs);}
+.menu-btn{display:none;width:38px;height:38px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--white);align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;color:var(--text-med);transition:all var(--transition);flex-shrink:0;}
+.menu-btn:hover{background:var(--paper);border-color:var(--subtle);}
+.topbar-title-wrap{flex:1;min-width:0;}
+.topbar-title{font-family:'Fraunces',Georgia,serif;font-size:1.1rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;}
+.topbar-meta{font-size:0.75rem;color:var(--muted);margin-top:1px;}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.status-chip{display:flex;align-items:center;gap:7px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2);border-radius:99px;padding:5px 12px;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(5,150,105,0.25);animation:statusPulse 2.5s infinite;}
+@keyframes statusPulse{0%,100%{box-shadow:0 0 0 2px rgba(5,150,105,0.25);}50%{box-shadow:0 0 0 5px rgba(5,150,105,0.08);}}
+.status-label{font-size:0.75rem;font-weight:600;color:var(--green-mid);}
+
+/* ── CONTENT ── */
+.content{padding:28px 32px;flex:1;}
+.section{display:none;}
+.section.active{display:block;animation:sectionIn 0.3s ease;}
+@keyframes sectionIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PAGE HEADER ── */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
+.page-header-left h2{font-family:'Fraunces',Georgia,serif;font-size:1.65rem;font-weight:700;color:var(--text);letter-spacing:-0.02em;line-height:1.1;}
+.page-header-left p{font-size:0.875rem;color:var(--muted);margin-top:4px;}
+.page-header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+
+/* ── STATS GRID ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-xs);transition:all var(--transition);position:relative;overflow:hidden;}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;}
+.stat-card.green::after{background:linear-gradient(90deg,var(--green),#34d399);}
+.stat-card.amber::after{background:linear-gradient(90deg,var(--amber),#fcd34d);}
+.stat-card.rose::after{background:linear-gradient(90deg,var(--rose),#fb7185);}
+.stat-card.blue::after{background:linear-gradient(90deg,var(--blue),#93c5fd);}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.stat-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.stat-icon.green{background:rgba(5,150,105,0.1);}
+.stat-icon.amber{background:rgba(245,158,11,0.1);}
+.stat-icon.rose{background:rgba(244,63,94,0.1);}
+.stat-icon.blue{background:rgba(59,130,246,0.1);}
+.stat-trend{font-size:0.72rem;font-weight:600;padding:3px 8px;border-radius:20px;white-space:nowrap;}
+.trend-up{background:#dcfce7;color:#166534;}
+.trend-neutral{background:var(--paper);color:var(--muted);}
+.trend-warn{background:#fff7ed;color:#9a3412;}
+.stat-value{font-family:'Fraunces',Georgia,serif;font-size:2rem;font-weight:700;color:var(--text);letter-spacing:-0.03em;line-height:1;margin-bottom:4px;}
+.stat-label{font-size:0.8rem;color:var(--muted);font-weight:500;}
+.stat-sub{font-size:0.72rem;color:var(--subtle);margin-top:6px;}
+
+/* ── DASH GRID ── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.dash-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-xs);}
+.panel-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.panel-header-icon{width:30px;height:30px;border-radius:8px;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:0.9rem;}
+.panel-header h3{font-size:0.88rem;font-weight:700;color:var(--text);flex:1;}
+.panel-header .panel-count{font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--paper);color:var(--muted);}
+.panel-body{padding:16px 22px;max-height:280px;overflow-y:auto;}
+.activity-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.04);align-items:flex-start;}
+.activity-item:last-child{border-bottom:none;}
+.activity-bullet{width:7px;height:7px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.bullet-green{background:var(--green);}.bullet-rose{background:var(--rose);}.bullet-amber{background:var(--amber);}
+.activity-main{font-size:0.85rem;font-weight:500;color:var(--text);}
+.activity-sub{font-size:0.77rem;color:var(--muted);margin-top:2px;}
+.panel-empty{text-align:center;padding:32px 20px;font-size:0.85rem;color:var(--muted);}
+.panel-empty-icon{font-size:1.8rem;margin-bottom:8px;opacity:0.4;}
+
+/* ── CARD TABLE ── */
+.card-table{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-xs);}
+.card-table-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.card-table-header-left{flex:1;min-width:0;}
+.card-table-header h2{font-family:'Fraunces',Georgia,serif;font-size:1.1rem;font-weight:700;color:var(--text);}
+.card-table-header p{font-size:0.78rem;color:var(--muted);margin-top:2px;}
+.header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;transition:all var(--transition);}
+.search-bar:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,0.1);background:var(--white);}
+.search-bar .search-icon{color:var(--subtle);font-size:0.85rem;flex-shrink:0;}
+.search-bar input{border:none;background:none;outline:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.85rem;color:var(--text);width:160px;}
+.search-bar input::placeholder{color:var(--subtle);}
+.table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:540px;}
+thead tr{background:var(--paper);border-bottom:1px solid var(--border);}
+th{padding:11px 16px;text-align:left;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--subtle);white-space:nowrap;user-select:none;}
+td{padding:14px 16px;border-bottom:1px solid rgba(0,0,0,0.04);font-size:0.875rem;vertical-align:middle;}
+tbody tr{transition:background var(--transition);}
+tbody tr:hover{background:rgba(5,150,105,0.025);}
+tbody tr:last-child td{border-bottom:none;}
+.cell-main{font-weight:600;color:var(--text);}
+.cell-sub{font-size:0.75rem;color:var(--muted);margin-top:2px;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:0.72rem;font-weight:700;white-space:nowrap;letter-spacing:0.01em;}
+.badge-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.badge-green{background:#dcfce7;color:#166534;}.badge-green .badge-dot{background:#16a34a;}
+.badge-amber{background:#fef3c7;color:#92400e;}.badge-amber .badge-dot{background:#d97706;}
+.badge-rose{background:#ffe4e6;color:#9f1239;}.badge-rose .badge-dot{background:#e11d48;}
+.badge-blue{background:#dbeafe;color:#1e3a8a;}.badge-blue .badge-dot{background:#2563eb;}
+.badge-slate{background:var(--paper);color:var(--text-med);}.badge-slate .badge-dot{background:var(--subtle);}
+.badge-purple{background:#ede9fe;color:#4c1d95;}.badge-purple .badge-dot{background:#7c3aed;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--radius-sm);border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.845rem;font-weight:600;cursor:pointer;transition:all var(--transition);white-space:nowrap;text-decoration:none;line-height:1;}
+.btn-primary{background:var(--green);color:var(--white);box-shadow:0 2px 8px var(--green-glow);}
+.btn-primary:hover{background:var(--green-mid);transform:translateY(-1px);box-shadow:0 5px 14px var(--green-glow);}
+.btn-primary:active{transform:translateY(0);}
+.btn-ghost{background:var(--white);color:var(--text-med);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--paper);border-color:var(--subtle);}
+.btn-icon{width:32px;height:32px;padding:0;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:0.8rem;transition:all var(--transition);}
+.btn-edit{background:rgba(5,150,105,0.08);color:var(--green);}
+.btn-edit:hover{background:rgba(5,150,105,0.18);}
+.btn-delete{background:rgba(244,63,94,0.08);color:var(--rose);}
+.btn-delete:hover{background:rgba(244,63,94,0.18);}
+.btn-cancel{background:rgba(245,158,11,0.1);color:#b45309;}
+.btn-cancel:hover{background:rgba(245,158,11,0.22);}
+.action-cell{display:flex;gap:6px;align-items:center;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:64px 24px;color:var(--muted);}
+.empty-icon{font-size:2.8rem;margin-bottom:14px;opacity:0.35;}
+.empty-state h3{font-size:0.95rem;font-weight:700;color:var(--text-med);margin-bottom:6px;}
+.empty-state p{font-size:0.83rem;max-width:240px;margin:0 auto;}
+
+/* ── STOCK ── */
+.stock-critical{color:var(--rose);font-weight:700;}
+.stock-low{color:var(--amber);font-weight:600;}
+.stock-ok{color:var(--green);font-weight:600;}
+
+/* ── MODAL ── */
+.modal{display:none;position:fixed;inset:0;background:rgba(13,17,23,0.6);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;padding:16px;}
+.modal.open{display:flex;}
+.modal-content{background:var(--white);width:100%;max-width:520px;border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);animation:modalIn 0.25s cubic-bezier(0.34,1.4,0.64,1);max-height:90vh;overflow-y:auto;border:1px solid var(--border);}
+@keyframes modalIn{from{opacity:0;transform:scale(0.9) translateY(16px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.modal-header{padding:24px 28px 0;display:flex;align-items:center;gap:12px;}
+.modal-header-icon{width:38px;height:38px;border-radius:10px;background:var(--green-glass);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.modal-header-text{flex:1;}
+.modal-header h2{font-family:'Fraunces',Georgia,serif;font-size:1.15rem;font-weight:700;color:var(--text);}
+.modal-header p{font-size:0.78rem;color:var(--muted);margin-top:2px;}
+.modal-close{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;color:var(--text-med);transition:all var(--transition);flex-shrink:0;}
+.modal-close:hover{background:var(--paper);border-color:var(--subtle);}
+.modal-divider{height:1px;background:var(--border);margin:18px 0 0;}
+.modal-body{padding:22px 28px 28px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-grid .full{grid-column:1 / -1;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group label{font-size:0.78rem;font-weight:700;color:var(--text-med);letter-spacing:0.02em;}
+.form-group label span{color:var(--rose);margin-left:2px;}
+.form-group input,.form-group select,.form-group textarea{padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.875rem;color:var(--text);outline:none;background:var(--white);transition:all var(--transition);}
+.form-group input:focus,.form-group select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,0.1);}
+.form-group input::placeholder{color:var(--subtle);}
+.form-group select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238a95a3' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:36px;}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding-top:20px;border-top:1px solid var(--border);margin-top:20px;}
+
+/* ── USUARIOS ADMIN PANEL ── */
+.user-list-item {
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  border-bottom:1px solid rgba(0,0,0,0.04);transition:background var(--transition);
+}
+.user-list-item:hover{background:rgba(5,150,105,0.025);}
+.user-list-item:last-child{border-bottom:none;}
+.user-list-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;flex-shrink:0;}
+.avatar-admin{background:linear-gradient(135deg,#92400e,#78350f);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);}
+.avatar-user{background:linear-gradient(135deg,#1e3a8a,#1e40af);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);}
+.user-list-info{flex:1;min-width:0;}
+.user-list-name{font-size:0.85rem;font-weight:600;color:var(--text);}
+.user-list-meta{font-size:0.75rem;color:var(--muted);margin-top:2px;}
+.user-list-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+
+/* ── TOAST ── */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:900;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast{background:var(--ink);color:var(--white);padding:12px 18px;border-radius:var(--radius);font-size:0.85rem;font-weight:500;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;animation:toastIn 0.35s cubic-bezier(0.34,1.4,0.64,1);pointer-events:all;max-width:320px;border-left:3px solid var(--green);}
+.toast.error{border-left-color:var(--rose);}
+.toast.warn{border-left-color:var(--amber);}
+@keyframes toastIn{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:translateX(0);}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  :root{--sidebar-w:64px;}
+  .brand-text,.nav-item .nav-label,.nav-badge,.sidebar-footer .user-info,.sidebar-section-label{display:none;}
+  .sidebar-header{padding:18px 12px;justify-content:center;}
+  .brand{justify-content:center;}
+  .brand-icon{width:38px;height:38px;}
+  .nav-item{justify-content:center;padding:12px 0;}
+  .nav-item .nav-icon{font-size:1.15rem;}
+  .sidebar-footer{padding:12px 8px;}
+  .user-card{justify-content:center;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .dash-grid{grid-template-columns:1fr;}
+  .topbar{padding:0 20px;}
+  .content{padding:24px 20px;}
+  .logout-btn span{display:none;}
+  .logout-btn{justify-content:center;padding:9px;}
+  .role-badge-sidebar{display:none;}
+}
+@media(max-width:768px){
+  :root{--sidebar-w:260px;}
+  .sidebar{transform:translateX(-100%);width:var(--sidebar-w);}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.open{display:block;}
+  .brand-text,.nav-item .nav-label,.sidebar-section-label,.sidebar-footer .user-info{display:block;}
+  .nav-badge{display:inline-flex;}
+  .sidebar-header{padding:24px 22px 18px;}
+  .nav-item{justify-content:flex-start;padding:10px 12px;}
+  .main-wrapper{margin-left:0 !important;}
+  .menu-btn{display:flex;}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:12px;}
+  .dash-grid{grid-template-columns:1fr;}
+  .content{padding:20px 16px;}
+  .topbar{padding:0 16px;}
+  .topbar-title{font-size:1rem;}
+  .header-actions{width:100%;}
+  .search-bar{flex:1;}
+  .search-bar input{width:100%;}
+  .page-header{gap:12px;}
+  .page-header-right{width:100%;}
+  .stat-value{font-size:1.6rem;}
+  .status-label{display:none;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-grid .full{grid-column:1;}
+  .table-wrapper{font-size:0.82rem;}
+  td,th{padding:10px 12px;}
+  .toast-container{bottom:16px;right:12px;left:12px;}
+  .toast{max-width:100%;}
+  .logout-btn span{display:inline;}
+  .role-badge-sidebar{display:inline-flex;}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr;}
+  .stat-card{padding:16px;}
+  .stat-value{font-size:1.4rem;}
+  .content{padding:16px 12px;}
+}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.01ms !important;}}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR OVERLAY (mobile) -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileMenu()" aria-hidden="true"></div>
+<!-- ══ AUTH SCREEN ══ -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-icon">🐾</div>
+      <div class="auth-brand-text">
+        <h1><em>BP</em> Veterinaria</h1>
+        <span>Sistema Clínico v2.0</span>
+      </div>
+    </div>
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar" role="navigation" aria-label="Menú principal">
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')" id="tab-login">Iniciar Sesión</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')" id="tab-register">Crear Cuenta</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginForm">
+      <div class="auth-form">
+        <div class="auth-field">
+          <label>Usuario <span>*</span></label>
+          <input type="text" id="login-user" placeholder="Tu nombre de usuario" autocomplete="username">
+        </div>
+        <div class="auth-field">
+          <label>Contraseña <span>*</span></label>
+          <input type="password" id="login-pass" placeholder="Tu contraseña" autocomplete="current-password">
+        </div>
+        <div id="login-err" class="auth-err" style="display:none;"></div>
+        <button class="auth-btn" onclick="doLogin()">Entrar al Sistema</button>
+      </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerForm" style="display:none;">
+      <div class="auth-form">
+        <div class="auth-field">
+          <label>Nombre Completo <span>*</span></label>
+          <input type="text" id="reg-nombre" placeholder="Ej. María García López" autocomplete="name">
+        </div>
+        <div class="auth-field">
+          <label>Usuario <span>*</span></label>
+          <input type="text" id="reg-user" placeholder="Sin espacios, ej. mgarcia" autocomplete="username">
+        </div>
+        <div class="auth-field">
+          <label>Contraseña <span>*</span></label>
+          <input type="password" id="reg-pass" placeholder="Mínimo 4 caracteres" autocomplete="new-password">
+        </div>
+        <div class="auth-field">
+          <label>Tipo de Cuenta <span>*</span></label>
+          <select id="reg-role">
+            <option value="usuario">Usuario — Agregar y cancelar mis registros</option>
+            <option value="admin">Administrador — Control total</option>
+          </select>
+        </div>
+        <div id="reg-err" class="auth-err" style="display:none;"></div>
+        <button class="auth-btn" onclick="doRegister()">Crear Cuenta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="appRoot" style="display:none;">
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileMenu()"></div>
+
+<aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="brand">
-      <div class="brand-icon" aria-hidden="true">🐾</div>
+      <div class="brand-icon">🐾</div>
       <div class="brand-text">
         <h1><em>BP</em> Veterinaria</h1>
         <span>Sistema Clínico v2.0</span>
@@ -853,384 +478,251 @@ tbody tr:last-child td { border-bottom: none; }
     </div>
   </div>
 
-  <nav class="sidebar-nav" aria-label="Navegación">
+  <nav class="sidebar-nav">
     <div class="sidebar-section-label">Principal</div>
-    <button class="nav-item active" onclick="showSection('dashboard')" id="nav-dashboard" aria-current="page" aria-label="Dashboard general">
-      <span class="nav-icon" aria-hidden="true">▣</span>
-      <span class="nav-label">Dashboard</span>
+    <button class="nav-item active" onclick="showSection('dashboard')" id="nav-dashboard">
+      <span class="nav-icon">▣</span><span class="nav-label">Dashboard</span>
     </button>
-    <button class="nav-item" onclick="showSection('pacientes')" id="nav-pacientes" aria-label="Pacientes">
-      <span class="nav-icon" aria-hidden="true">🐾</span>
-      <span class="nav-label">Pacientes</span>
-      <span class="nav-badge" id="badge-pacientes" aria-live="polite">0</span>
+    <button class="nav-item" onclick="showSection('pacientes')" id="nav-pacientes">
+      <span class="nav-icon">🐾</span><span class="nav-label">Pacientes</span>
+      <span class="nav-badge" id="badge-pacientes">0</span>
     </button>
-    <button class="nav-item" onclick="showSection('citas')" id="nav-citas" aria-label="Agenda de citas">
-      <span class="nav-icon" aria-hidden="true">📅</span>
-      <span class="nav-label">Agenda</span>
-      <span class="nav-badge" id="badge-citas" aria-live="polite">0</span>
+    <button class="nav-item" onclick="showSection('citas')" id="nav-citas">
+      <span class="nav-icon">📅</span><span class="nav-label">Agenda</span>
+      <span class="nav-badge" id="badge-citas">0</span>
     </button>
 
     <div class="sidebar-section-label" style="margin-top:8px;">Clínica</div>
-    <button class="nav-item" onclick="showSection('veterinarios')" id="nav-veterinarios" aria-label="Veterinarios">
-      <span class="nav-icon" aria-hidden="true">👨‍⚕️</span>
-      <span class="nav-label">Veterinarios</span>
-      <span class="nav-badge" id="badge-veterinarios" aria-live="polite">0</span>
+    <button class="nav-item" onclick="showSection('veterinarios')" id="nav-veterinarios">
+      <span class="nav-icon">👨‍⚕️</span><span class="nav-label">Veterinarios</span>
+      <span class="nav-badge" id="badge-veterinarios">0</span>
     </button>
-    <button class="nav-item" onclick="showSection('servicios')" id="nav-servicios" aria-label="Catálogo de servicios">
-      <span class="nav-icon" aria-hidden="true">🩺</span>
-      <span class="nav-label">Servicios</span>
-      <span class="nav-badge" id="badge-servicios" aria-live="polite">0</span>
+    <button class="nav-item" onclick="showSection('servicios')" id="nav-servicios">
+      <span class="nav-icon">🩺</span><span class="nav-label">Servicios</span>
+      <span class="nav-badge" id="badge-servicios">0</span>
     </button>
 
     <div class="sidebar-section-label" style="margin-top:8px;">Operaciones</div>
-    <button class="nav-item" onclick="showSection('inventario')" id="nav-inventario" aria-label="Inventario de farmacia">
-      <span class="nav-icon" aria-hidden="true">📦</span>
-      <span class="nav-label">Inventario</span>
-      <span class="nav-badge" id="badge-inventario" aria-live="polite">0</span>
+    <button class="nav-item" onclick="showSection('inventario')" id="nav-inventario">
+      <span class="nav-icon">📦</span><span class="nav-label">Inventario</span>
+      <span class="nav-badge" id="badge-inventario">0</span>
     </button>
-    <button class="nav-item" onclick="showSection('facturas')" id="nav-facturas" aria-label="Finanzas y facturación">
-      <span class="nav-icon" aria-hidden="true">💵</span>
-      <span class="nav-label">Finanzas</span>
-      <span class="nav-badge" id="badge-facturas" aria-live="polite">0</span>
+    <button class="nav-item" onclick="showSection('facturas')" id="nav-facturas">
+      <span class="nav-icon">💵</span><span class="nav-label">Finanzas</span>
+      <span class="nav-badge" id="badge-facturas">0</span>
+    </button>
+
+    <!-- Solo admin ve Usuarios -->
+    <div class="sidebar-section-label" style="margin-top:8px;" id="nav-section-admin">Admin</div>
+    <button class="nav-item" onclick="showSection('usuarios')" id="nav-usuarios">
+      <span class="nav-icon">👥</span><span class="nav-label">Usuarios</span>
+      <span class="nav-badge" id="badge-usuarios">0</span>
     </button>
   </nav>
 
   <div class="sidebar-footer">
     <div class="user-card">
-      <div class="user-avatar" aria-hidden="true">BK</div>
+      <div class="user-avatar" id="sidebar-avatar">--</div>
       <div class="user-info">
-        <strong>Kevin Barrón Pando</strong>
-        <span>© 2026 BP Veterinaria</span>
+        <strong id="sidebar-name">—</strong>
+        <span id="sidebar-username">—</span>
+        <div id="sidebar-role-badge" class="role-badge-sidebar role-user">👤 Usuario</div>
       </div>
     </div>
+    <button class="logout-btn" onclick="doLogout()">
+      <span>🚪</span><span>Cerrar Sesión</span>
+    </button>
   </div>
 </aside>
 
-<!-- MAIN WRAPPER -->
 <div class="main-wrapper" id="mainWrapper">
-
-  <!-- TOPBAR -->
-  <header class="topbar" role="banner">
-    <button class="menu-btn" onclick="toggleMobileMenu()" aria-label="Abrir menú" aria-expanded="false" id="menuBtn">
-      ☰
-    </button>
+  <header class="topbar">
+    <button class="menu-btn" onclick="toggleMobileMenu()" id="menuBtn" aria-label="Abrir menú">☰</button>
     <div class="topbar-title-wrap">
       <div class="topbar-title" id="topbar-title">Dashboard General</div>
       <div class="topbar-meta" id="topbar-meta">Resumen del sistema clínico</div>
     </div>
     <div class="topbar-right">
-      <div class="status-chip" role="status" aria-live="polite" aria-label="Estado de conexión">
-        <div class="status-dot" aria-hidden="true"></div>
-        <span class="status-label">MongoDB conectado</span>
+      <div class="status-chip">
+        <div class="status-dot"></div>
+        <span class="status-label" id="current-role-label">—</span>
       </div>
     </div>
   </header>
 
-  <!-- CONTENT -->
   <main class="content" id="mainContent">
 
-    <!-- ── DASHBOARD ── -->
-    <section id="sec-dashboard" class="section active" aria-label="Dashboard">
+    <!-- DASHBOARD -->
+    <section id="sec-dashboard" class="section active">
       <div class="page-header">
         <div class="page-header-left">
           <h2>Panel General</h2>
           <p>Vista consolidada del sistema clínico</p>
         </div>
       </div>
-
-      <div class="stats-grid" role="region" aria-label="Estadísticas principales">
-        <div class="stat-card green" role="article" aria-label="Pacientes registrados">
-          <div class="stat-top">
-            <div class="stat-icon green" aria-hidden="true">🐾</div>
-            <span class="stat-trend trend-neutral" id="stat-pacientes-badge">—</span>
-          </div>
-          <div class="stat-value" id="stat-pacientes" aria-live="polite">—</div>
+      <div class="stats-grid">
+        <div class="stat-card green">
+          <div class="stat-top"><div class="stat-icon green">🐾</div><span class="stat-trend trend-neutral" id="stat-pacientes-badge">—</span></div>
+          <div class="stat-value" id="stat-pacientes">—</div>
           <div class="stat-label">Pacientes Registrados</div>
           <div class="stat-sub" id="stat-pacientes-sub">Cargando...</div>
         </div>
-        <div class="stat-card amber" role="article" aria-label="Citas agendadas">
-          <div class="stat-top">
-            <div class="stat-icon amber" aria-hidden="true">📅</div>
-            <span class="stat-trend trend-neutral" id="stat-citas-badge">—</span>
-          </div>
-          <div class="stat-value" id="stat-citas" aria-live="polite">—</div>
+        <div class="stat-card amber">
+          <div class="stat-top"><div class="stat-icon amber">📅</div><span class="stat-trend trend-neutral" id="stat-citas-badge">—</span></div>
+          <div class="stat-value" id="stat-citas">—</div>
           <div class="stat-label">Citas Agendadas</div>
           <div class="stat-sub" id="stat-citas-sub">Cargando...</div>
         </div>
-        <div class="stat-card rose" role="article" aria-label="Ingresos totales">
-          <div class="stat-top">
-            <div class="stat-icon rose" aria-hidden="true">💵</div>
-            <span class="stat-trend trend-up" id="stat-ingresos-badge">Activo</span>
-          </div>
-          <div class="stat-value" id="stat-ingresos" aria-live="polite">—</div>
+        <div class="stat-card rose">
+          <div class="stat-top"><div class="stat-icon rose">💵</div><span class="stat-trend trend-up" id="stat-ingresos-badge">Activo</span></div>
+          <div class="stat-value" id="stat-ingresos">—</div>
           <div class="stat-label">Ingresos Totales</div>
           <div class="stat-sub" id="stat-ingresos-sub">Cargando...</div>
         </div>
-        <div class="stat-card blue" role="article" aria-label="Productos en stock">
-          <div class="stat-top">
-            <div class="stat-icon blue" aria-hidden="true">📦</div>
-            <span class="stat-trend trend-neutral" id="stat-productos-badge">—</span>
-          </div>
-          <div class="stat-value" id="stat-productos" aria-live="polite">—</div>
+        <div class="stat-card blue">
+          <div class="stat-top"><div class="stat-icon blue">📦</div><span class="stat-trend trend-neutral" id="stat-productos-badge">—</span></div>
+          <div class="stat-value" id="stat-productos">—</div>
           <div class="stat-label">Productos en Stock</div>
           <div class="stat-sub" id="stat-productos-sub">Cargando...</div>
         </div>
       </div>
-
       <div class="dash-grid">
         <div class="dash-panel">
-          <div class="panel-header">
-            <div class="panel-header-icon" aria-hidden="true">📋</div>
-            <h3>Últimas Citas</h3>
-            <span class="panel-count" id="dash-citas-count" aria-live="polite">0</span>
-          </div>
-          <div class="panel-body" id="dash-citas-list" role="list" aria-live="polite">
-            <div class="panel-empty">
-              <div class="panel-empty-icon">📋</div>
-              Cargando citas...
-            </div>
-          </div>
+          <div class="panel-header"><div class="panel-header-icon">📋</div><h3>Últimas Citas</h3><span class="panel-count" id="dash-citas-count">0</span></div>
+          <div class="panel-body" id="dash-citas-list"><div class="panel-empty"><div class="panel-empty-icon">📋</div>Cargando...</div></div>
         </div>
         <div class="dash-panel">
-          <div class="panel-header">
-            <div class="panel-header-icon" aria-hidden="true">⚠️</div>
-            <h3>Alertas de Stock</h3>
-            <span class="panel-count" id="dash-stock-count" aria-live="polite">0</span>
-          </div>
-          <div class="panel-body" id="dash-stock-list" role="list" aria-live="polite">
-            <div class="panel-empty">
-              <div class="panel-empty-icon">📦</div>
-              Cargando inventario...
-            </div>
-          </div>
+          <div class="panel-header"><div class="panel-header-icon">⚠️</div><h3>Alertas de Stock</h3><span class="panel-count" id="dash-stock-count">0</span></div>
+          <div class="panel-body" id="dash-stock-list"><div class="panel-empty"><div class="panel-empty-icon">📦</div>Cargando...</div></div>
         </div>
       </div>
     </section>
 
-    <!-- ── PACIENTES ── -->
-    <section id="sec-pacientes" class="section" aria-label="Registro de pacientes">
+    <!-- PACIENTES -->
+    <section id="sec-pacientes" class="section">
       <div class="card-table">
         <div class="card-table-header">
-          <div class="card-table-header-left">
-            <h2>Registro de Pacientes</h2>
-            <p>Mascotas y propietarios activos en el sistema</p>
-          </div>
+          <div class="card-table-header-left"><h2>Registro de Pacientes</h2><p>Mascotas y propietarios activos en el sistema</p></div>
           <div class="header-actions">
-            <div class="search-bar" role="search">
-              <span class="search-icon" aria-hidden="true">🔍</span>
-              <input type="search" placeholder="Buscar por nombre, especie…" aria-label="Buscar paciente" oninput="filterTable('pacientes', this.value)">
-            </div>
-            <button class="btn btn-primary" onclick="openModal('pacientes')" aria-label="Agregar nueva mascota">
-              <span aria-hidden="true">+</span> Nueva Mascota
-            </button>
+            <div class="search-bar"><span class="search-icon">🔍</span><input type="search" placeholder="Buscar..." oninput="filterTable('pacientes',this.value)"></div>
+            <button class="btn btn-primary" onclick="openModal('pacientes')">+ Nueva Mascota</button>
           </div>
         </div>
         <div class="table-wrapper">
-          <table aria-label="Lista de pacientes">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Mascota</th>
-                <th scope="col">Especie</th>
-                <th scope="col">Raza</th>
-                <th scope="col">Edad</th>
-                <th scope="col">Propietario</th>
-                <th scope="col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-pacientes"></tbody>
-          </table>
+          <table><thead><tr><th>#</th><th>Mascota</th><th>Especie</th><th>Raza</th><th>Edad</th><th>Propietario</th><th>Creado por</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-pacientes"></tbody></table>
         </div>
       </div>
     </section>
 
-    <!-- ── CITAS ── -->
-    <section id="sec-citas" class="section" aria-label="Agenda médica">
+    <!-- CITAS -->
+    <section id="sec-citas" class="section">
       <div class="card-table">
         <div class="card-table-header">
-          <div class="card-table-header-left">
-            <h2>Agenda Médica</h2>
-            <p>Control de citas y consultas programadas</p>
-          </div>
+          <div class="card-table-header-left"><h2>Agenda Médica</h2><p>Control de citas y consultas programadas</p></div>
           <div class="header-actions">
-            <div class="search-bar" role="search">
-              <span class="search-icon" aria-hidden="true">🔍</span>
-              <input type="search" placeholder="Buscar por mascota, veterinario…" aria-label="Buscar cita" oninput="filterTable('citas', this.value)">
-            </div>
-            <button class="btn btn-primary" onclick="openModal('citas')" aria-label="Agendar nueva cita">
-              <span aria-hidden="true">+</span> Agendar Cita
-            </button>
+            <div class="search-bar"><span class="search-icon">🔍</span><input type="search" placeholder="Buscar..." oninput="filterTable('citas',this.value)"></div>
+            <button class="btn btn-primary" onclick="openModal('citas')">+ Agendar Cita</button>
           </div>
         </div>
         <div class="table-wrapper">
-          <table aria-label="Lista de citas">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Fecha</th>
-                <th scope="col">Hora</th>
-                <th scope="col">Mascota</th>
-                <th scope="col">Veterinario</th>
-                <th scope="col">Motivo</th>
-                <th scope="col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-citas"></tbody>
-          </table>
+          <table><thead><tr><th>#</th><th>Fecha</th><th>Hora</th><th>Mascota</th><th>Veterinario</th><th>Motivo</th><th>Estado</th><th>Creado por</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-citas"></tbody></table>
         </div>
       </div>
     </section>
 
-    <!-- ── VETERINARIOS ── -->
-    <section id="sec-veterinarios" class="section" aria-label="Personal clínico">
+    <!-- VETERINARIOS -->
+    <section id="sec-veterinarios" class="section">
       <div class="card-table">
         <div class="card-table-header">
-          <div class="card-table-header-left">
-            <h2>Personal Clínico</h2>
-            <p>Directorio de veterinarios y especialistas</p>
-          </div>
-          <div class="header-actions">
-            <button class="btn btn-primary" onclick="openModal('veterinarios')" aria-label="Agregar nuevo veterinario">
-              <span aria-hidden="true">+</span> Nuevo Veterinario
-            </button>
-          </div>
+          <div class="card-table-header-left"><h2>Personal Clínico</h2><p>Directorio de veterinarios y especialistas</p></div>
+          <div class="header-actions"><button class="btn btn-primary" onclick="openModal('veterinarios')">+ Nuevo Veterinario</button></div>
         </div>
         <div class="table-wrapper">
-          <table aria-label="Lista de veterinarios">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Profesional</th>
-                <th scope="col">Especialidad</th>
-                <th scope="col">Teléfono</th>
-                <th scope="col">Turno</th>
-                <th scope="col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-veterinarios"></tbody>
-          </table>
+          <table><thead><tr><th>#</th><th>Profesional</th><th>Especialidad</th><th>Teléfono</th><th>Turno</th><th>Creado por</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-veterinarios"></tbody></table>
         </div>
       </div>
     </section>
 
-    <!-- ── INVENTARIO ── -->
-    <section id="sec-inventario" class="section" aria-label="Inventario de farmacia">
+    <!-- INVENTARIO -->
+    <section id="sec-inventario" class="section">
       <div class="card-table">
         <div class="card-table-header">
-          <div class="card-table-header-left">
-            <h2>Stock de Farmacia</h2>
-            <p>Control de medicamentos y productos veterinarios</p>
-          </div>
+          <div class="card-table-header-left"><h2>Stock de Farmacia</h2><p>Control de medicamentos y productos veterinarios</p></div>
           <div class="header-actions">
-            <div class="search-bar" role="search">
-              <span class="search-icon" aria-hidden="true">🔍</span>
-              <input type="search" placeholder="Buscar producto, categoría…" aria-label="Buscar producto" oninput="filterTable('inventario', this.value)">
-            </div>
-            <button class="btn btn-primary" onclick="openModal('inventario')" aria-label="Agregar nuevo producto">
-              <span aria-hidden="true">+</span> Nuevo Producto
-            </button>
+            <div class="search-bar"><span class="search-icon">🔍</span><input type="search" placeholder="Buscar..." oninput="filterTable('inventario',this.value)"></div>
+            <button class="btn btn-primary" onclick="openModal('inventario')">+ Nuevo Producto</button>
           </div>
         </div>
         <div class="table-wrapper">
-          <table aria-label="Lista de inventario">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Producto</th>
-                <th scope="col">Categoría</th>
-                <th scope="col">Stock</th>
-                <th scope="col">Precio Unit.</th>
-                <th scope="col">Valor Total</th>
-                <th scope="col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-inventario"></tbody>
-          </table>
+          <table><thead><tr><th>#</th><th>Producto</th><th>Categoría</th><th>Stock</th><th>Precio</th><th>Valor Total</th><th>Creado por</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-inventario"></tbody></table>
         </div>
       </div>
     </section>
 
-    <!-- ── FACTURAS ── -->
-    <section id="sec-facturas" class="section" aria-label="Control de finanzas">
+    <!-- FACTURAS -->
+    <section id="sec-facturas" class="section">
       <div class="card-table">
         <div class="card-table-header">
-          <div class="card-table-header-left">
-            <h2>Control de Ingresos</h2>
-            <p>Facturación, cobros y estado de pagos</p>
-          </div>
+          <div class="card-table-header-left"><h2>Control de Ingresos</h2><p>Facturación, cobros y estado de pagos</p></div>
           <div class="header-actions">
-            <div class="search-bar" role="search">
-              <span class="search-icon" aria-hidden="true">🔍</span>
-              <input type="search" placeholder="Buscar cliente, estado…" aria-label="Buscar factura" oninput="filterTable('facturas', this.value)">
-            </div>
-            <button class="btn btn-primary" onclick="openModal('facturas')" aria-label="Crear nueva factura">
-              <span aria-hidden="true">+</span> Nueva Factura
-            </button>
+            <div class="search-bar"><span class="search-icon">🔍</span><input type="search" placeholder="Buscar..." oninput="filterTable('facturas',this.value)"></div>
+            <button class="btn btn-primary" onclick="openModal('facturas')">+ Nueva Factura</button>
           </div>
         </div>
         <div class="table-wrapper">
-          <table aria-label="Lista de facturas">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Cliente</th>
-                <th scope="col">Total</th>
-                <th scope="col">Método de Pago</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-facturas"></tbody>
-          </table>
+          <table><thead><tr><th>#</th><th>Cliente</th><th>Total</th><th>Método de Pago</th><th>Estado</th><th>Creado por</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-facturas"></tbody></table>
         </div>
       </div>
     </section>
 
-    <!-- ── SERVICIOS ── -->
-    <section id="sec-servicios" class="section" aria-label="Catálogo de servicios">
+    <!-- SERVICIOS -->
+    <section id="sec-servicios" class="section">
       <div class="card-table">
         <div class="card-table-header">
-          <div class="card-table-header-left">
-            <h2>Catálogo de Servicios</h2>
-            <p>Servicios clínicos disponibles y sus tarifas</p>
-          </div>
-          <div class="header-actions">
-            <button class="btn btn-primary" onclick="openModal('servicios')" aria-label="Agregar nuevo servicio">
-              <span aria-hidden="true">+</span> Nuevo Servicio
-            </button>
-          </div>
+          <div class="card-table-header-left"><h2>Catálogo de Servicios</h2><p>Servicios clínicos disponibles y tarifas</p></div>
+          <div class="header-actions"><button class="btn btn-primary" onclick="openModal('servicios')">+ Nuevo Servicio</button></div>
         </div>
         <div class="table-wrapper">
-          <table aria-label="Lista de servicios">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Servicio</th>
-                <th scope="col">Duración</th>
-                <th scope="col">Costo</th>
-                <th scope="col">Sala</th>
-                <th scope="col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-servicios"></tbody>
-          </table>
+          <table><thead><tr><th>#</th><th>Servicio</th><th>Duración</th><th>Costo</th><th>Sala</th><th>Creado por</th><th>Acciones</th></tr></thead>
+          <tbody id="tbody-servicios"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- USUARIOS (solo admin) -->
+    <section id="sec-usuarios" class="section">
+      <div class="card-table">
+        <div class="card-table-header">
+          <div class="card-table-header-left"><h2>Gestión de Usuarios</h2><p>Cuentas registradas en el sistema</p></div>
+          <div class="header-actions">
+            <span class="badge badge-amber"><span class="badge-dot"></span>Solo administradores</span>
+          </div>
+        </div>
+        <div id="users-list-body" style="padding:8px 0;">
+          <!-- renderizado por JS -->
         </div>
       </div>
     </section>
 
   </main>
-</div><!-- /main-wrapper -->
+</div>
+</div><!-- /appRoot -->
 
-<!-- MODAL -->
-<div id="mainModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<!-- MODAL UNIVERSAL -->
+<div id="mainModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
-      <div class="modal-header-icon" id="modalIcon" aria-hidden="true">➕</div>
+      <div class="modal-header-icon" id="modalIcon">➕</div>
       <div class="modal-header-text">
         <h2 id="modalTitle">Formulario</h2>
         <p id="modalSubtitle">Completa los campos requeridos</p>
       </div>
-      <button class="modal-close" onclick="closeModal()" aria-label="Cerrar formulario">✕</button>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-divider"></div>
     <div class="modal-body">
@@ -1240,30 +732,199 @@ tbody tr:last-child td { border-bottom: none; }
         <div class="form-grid" id="formFields"></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="submitBtn">
-            <span aria-hidden="true">💾</span> Guardar en MongoDB
-          </button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">💾 Guardar</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
-<!-- TOAST CONTAINER -->
-<div class="toast-container" id="toastContainer" aria-live="assertive" role="alert"></div>
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
-/* ═══════════════════════════════════════════════
-   CONFIG
-═══════════════════════════════════════════════ */
-const config = {
+/* ══════════════════════════════════
+   STORAGE HELPERS
+══════════════════════════════════ */
+const DB_KEY = 'bpvet_db_v2';
+const SES_KEY = 'bpvet_session';
+
+function getDB() {
+  try { return JSON.parse(localStorage.getItem(DB_KEY)) || initDB(); }
+  catch { return initDB(); }
+}
+function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+function initDB() {
+  const db = {
+    users: [{
+      id: 'u-admin-001',
+      nombre: 'Kevin Barrón Pando',
+      username: 'admin',
+      password: 'admin123',
+      role: 'admin',
+      createdAt: new Date().toISOString()
+    }],
+    pacientes: [], citas: [], veterinarios: [],
+    inventario: [], facturas: [], servicios: []
+  };
+  saveDB(db);
+  return db;
+}
+
+function getSession() {
+  try { return JSON.parse(sessionStorage.getItem(SES_KEY)); }
+  catch { return null; }
+}
+function saveSession(user) { sessionStorage.setItem(SES_KEY, JSON.stringify(user)); }
+function clearSession()    { sessionStorage.removeItem(SES_KEY); }
+
+/* ══════════════════════════════════
+   CURRENT USER
+══════════════════════════════════ */
+let currentUser = null;
+let currentSection = 'dashboard';
+
+function isAdmin()   { return currentUser && currentUser.role === 'admin'; }
+function isMyRecord(item) { return item._createdBy === currentUser.id; }
+
+/* ══════════════════════════════════
+   AUTH — LOGIN / REGISTER
+══════════════════════════════════ */
+function switchAuthTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('loginForm').style.display    = tab === 'login'    ? '' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? '' : 'none';
+}
+
+function showAuthErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = '';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+function doLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!user || !pass) { showAuthErr('login-err', 'Completa todos los campos.'); return; }
+  const db   = getDB();
+  const found = db.users.find(u => u.username === user && u.password === pass);
+  if (!found) { showAuthErr('login-err', 'Usuario o contraseña incorrectos.'); return; }
+  loginSuccess(found);
+}
+
+function doRegister() {
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const user   = document.getElementById('reg-user').value.trim().toLowerCase().replace(/\s+/g,'');
+  const pass   = document.getElementById('reg-pass').value;
+  const role   = document.getElementById('reg-role').value;
+  if (!nombre || !user || !pass) { showAuthErr('reg-err', 'Completa todos los campos.'); return; }
+  if (pass.length < 4) { showAuthErr('reg-err', 'La contraseña debe tener mínimo 4 caracteres.'); return; }
+  if (!/^[a-z0-9_]+$/.test(user)) { showAuthErr('reg-err', 'El usuario solo puede tener letras, números y _'); return; }
+  const db = getDB();
+  if (db.users.find(u => u.username === user)) { showAuthErr('reg-err', 'Ese nombre de usuario ya está en uso.'); return; }
+  const newUser = { id: 'u-' + Date.now(), nombre, username: user, password: pass, role, createdAt: new Date().toISOString() };
+  db.users.push(newUser);
+  saveDB(db);
+  showToast('✅ Cuenta creada correctamente. ¡Inicia sesión!');
+  document.getElementById('reg-nombre').value = '';
+  document.getElementById('reg-user').value   = '';
+  document.getElementById('reg-pass').value   = '';
+  switchAuthTab('login');
+}
+
+function loginSuccess(user) {
+  currentUser = user;
+  saveSession(user);
+  // UI
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('appRoot').style.display    = '';
+  // Sidebar info
+  const initials = user.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('sidebar-avatar').textContent  = initials;
+  document.getElementById('sidebar-name').textContent    = user.nombre;
+  document.getElementById('sidebar-username').textContent = '@' + user.username;
+  const roleBadge = document.getElementById('sidebar-role-badge');
+  const roleLabel = document.getElementById('current-role-label');
+  if (isAdmin()) {
+    roleBadge.className = 'role-badge-sidebar role-admin';
+    roleBadge.innerHTML = '⭐ Administrador';
+    roleLabel.textContent = 'Admin: ' + user.nombre;
+  } else {
+    roleBadge.className = 'role-badge-sidebar role-user';
+    roleBadge.innerHTML = '👤 Usuario';
+    roleLabel.textContent = 'Usuario: ' + user.nombre;
+  }
+  // Ocultar sección admin si no es admin
+  const adminSection = document.getElementById('nav-section-admin');
+  const adminNav     = document.getElementById('nav-usuarios');
+  if (!isAdmin()) {
+    adminSection.style.display = 'none';
+    adminNav.style.display     = 'none';
+  } else {
+    adminSection.style.display = '';
+    adminNav.style.display     = '';
+  }
+  loadDashboard();
+  updateAllBadges();
+}
+
+function doLogout() {
+  clearSession();
+  currentUser = null;
+  document.getElementById('appRoot').style.display    = 'none';
+  document.getElementById('authScreen').style.display = '';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  // Reset nav
+  showSection('dashboard');
+}
+
+/* ══════════════════════════════════
+   NAVIGATION
+══════════════════════════════════ */
+function showSection(id) {
+  if (id === 'usuarios' && !isAdmin()) { showToast('⛔ Solo administradores pueden ver esta sección.','error'); return; }
+  currentSection = id;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => { b.classList.remove('active'); b.removeAttribute('aria-current'); });
+  document.getElementById('sec-' + id).classList.add('active');
+  const navItem = document.getElementById('nav-' + id);
+  if (navItem) { navItem.classList.add('active'); navItem.setAttribute('aria-current','page'); }
+
+  const titles = {
+    dashboard:    ['Dashboard General',      'Resumen del sistema clínico'],
+    pacientes:    ['Pacientes',              'Mascotas registradas en el sistema'],
+    citas:        ['Agenda Médica',          'Citas y consultas programadas'],
+    veterinarios: ['Personal Clínico',       'Directorio de veterinarios activos'],
+    servicios:    ['Catálogo de Servicios',  'Servicios clínicos y tarifas'],
+    inventario:   ['Stock de Farmacia',      'Control de medicamentos y productos'],
+    facturas:     ['Control de Ingresos',    'Facturación y cobros'],
+    usuarios:     ['Gestión de Usuarios',    'Administración de cuentas del sistema'],
+  };
+  const t = titles[id] || ['—','—'];
+  document.getElementById('topbar-title').textContent = t[0];
+  document.getElementById('topbar-meta').textContent  = t[1];
+
+  if (id === 'dashboard') { loadDashboard(); }
+  else if (id === 'usuarios') { renderUsers(); }
+  else { renderTable(id); }
+
+  if (window.innerWidth < 768) closeMobileMenu();
+}
+
+/* ══════════════════════════════════
+   RENDER TABLES
+══════════════════════════════════ */
+const cols = {
   pacientes: {
-    title: 'Paciente', icon: '🐾',
-    topbar: ['Pacientes', 'Mascotas registradas en el sistema'],
-    fields:  ['nombre','especie','raza','edad','propietario'],
-    labels:  ['Nombre de la Mascota','Especie','Raza','Edad (años)','Propietario'],
-    types:   ['text','text','text','number','text'],
-    required: [true, true, false, true, true],
+    title:'Mascota', icon:'🐾',
+    fields:['nombre','especie','raza','edad','propietario'],
+    labels:['Nombre de la Mascota','Especie','Raza','Edad (años)','Propietario'],
+    types:['text','text','text','number','text'],
+    required:[true,true,false,true,true],
     render(item, i) {
       return `
         <td><span class="cell-main">${i}</span></td>
@@ -1271,335 +932,245 @@ const config = {
         <td>${speciesBadge(item.especie)}</td>
         <td>${esc(item.raza||'—')}</td>
         <td>${item.edad} año${item.edad==1?'':'s'}</td>
-        <td><div class="cell-main">${esc(item.propietario)}</div></td>`;
+        <td><div class="cell-main">${esc(item.propietario)}</div></td>
+        <td>${ownerChip(item._createdBy)}</td>`;
     }
   },
   citas: {
-    title: 'Cita', icon: '📅',
-    topbar: ['Agenda Médica', 'Citas y consultas programadas'],
-    fields:  ['fecha','hora','mascota','veterinario','motivo'],
-    labels:  ['Fecha','Hora','Mascota','Veterinario','Motivo'],
-    types:   ['date','time','text','text','text'],
-    required: [true, true, true, true, true],
+    title:'Cita', icon:'📅',
+    fields:['fecha','hora','mascota','veterinario','motivo'],
+    labels:['Fecha','Hora','Mascota','Veterinario','Motivo'],
+    types:['date','time','text','text','text'],
+    required:[true,true,true,true,true],
     render(item, i) {
+      const statusBadge = item._cancelado
+        ? `<span class="badge badge-rose"><span class="badge-dot"></span>Cancelado</span>`
+        : `<span class="badge badge-green"><span class="badge-dot"></span>Activo</span>`;
       return `
         <td><span class="cell-main">${i}</span></td>
         <td><div class="cell-main">${formatDate(item.fecha)}</div></td>
         <td>${esc(item.hora)}</td>
         <td><div class="cell-main">${esc(item.mascota)}</div></td>
         <td>${esc(item.veterinario)}</td>
-        <td><span class="badge badge-blue"><span class="badge-dot"></span>${esc(item.motivo)}</span></td>`;
+        <td><span class="badge badge-blue"><span class="badge-dot"></span>${esc(item.motivo)}</span></td>
+        <td>${statusBadge}</td>
+        <td>${ownerChip(item._createdBy)}</td>`;
     }
   },
   veterinarios: {
-    title: 'Veterinario', icon: '👨‍⚕️',
-    topbar: ['Personal Clínico', 'Directorio de veterinarios activos'],
-    fields:  ['nombre','especialidad','telefono','turno'],
-    labels:  ['Nombre Completo','Especialidad','Teléfono','Turno'],
-    types:   ['text','text','tel','text'],
-    required: [true, true, false, true],
+    title:'Veterinario', icon:'👨‍⚕️',
+    fields:['nombre','especialidad','telefono','turno'],
+    labels:['Nombre Completo','Especialidad','Teléfono','Turno'],
+    types:['text','text','tel','text'],
+    required:[true,true,false,true],
     render(item, i) {
+      const statusBadge = item._cancelado
+        ? `<span class="badge badge-rose"><span class="badge-dot"></span>Inactivo</span>` : '';
       return `
         <td><span class="cell-main">${i}</span></td>
-        <td><div class="cell-main">${esc(item.nombre)}</div></td>
+        <td><div class="cell-main">${esc(item.nombre)}</div><div class="cell-sub">${statusBadge}</div></td>
         <td>${esc(item.especialidad)}</td>
         <td>${esc(item.telefono||'—')}</td>
-        <td>${turnoBadge(item.turno)}</td>`;
+        <td>${turnoBadge(item.turno)}</td>
+        <td>${ownerChip(item._createdBy)}</td>`;
     }
   },
   inventario: {
-    title: 'Producto', icon: '📦',
-    topbar: ['Stock de Farmacia', 'Control de medicamentos y productos'],
-    fields:  ['producto','categoria','stock','precio'],
-    labels:  ['Nombre del Producto','Categoría','Stock (unidades)','Precio (MXN)'],
-    types:   ['text','text','number','number'],
-    required: [true, true, true, true],
+    title:'Producto', icon:'📦',
+    fields:['producto','categoria','stock','precio'],
+    labels:['Nombre del Producto','Categoría','Stock (unidades)','Precio (MXN)'],
+    types:['text','text','number','number'],
+    required:[true,true,true,true],
     render(item, i) {
       const st = Number(item.stock);
       const cls = st <= 0 ? 'stock-critical' : st < 5 ? 'stock-critical' : st < 10 ? 'stock-low' : 'stock-ok';
+      const cancelBadge = item._cancelado ? `<span class="badge badge-rose" style="margin-left:4px;"><span class="badge-dot"></span>Retirado</span>` : '';
       return `
         <td><span class="cell-main">${i}</span></td>
-        <td><div class="cell-main">${esc(item.producto)}</div></td>
+        <td><div class="cell-main">${esc(item.producto)}</div>${cancelBadge}</td>
         <td><span class="badge badge-slate"><span class="badge-dot"></span>${esc(item.categoria)}</span></td>
-        <td><span class="${cls}" aria-label="${st} unidades">${st} uds</span></td>
+        <td><span class="${cls}">${st} uds</span></td>
         <td>$${fmt(item.precio)}</td>
-        <td>$${fmt(st * item.precio)}</td>`;
+        <td>$${fmt(st * item.precio)}</td>
+        <td>${ownerChip(item._createdBy)}</td>`;
     }
   },
   facturas: {
-    title: 'Factura', icon: '💵',
-    topbar: ['Control de Ingresos', 'Facturación y cobros'],
-    fields:  ['cliente','total','metodoPago','estado'],
-    labels:  ['Cliente','Total ($)','Método de Pago','Estado'],
-    types:   ['text','number','text','text'],
-    required: [true, true, true, true],
+    title:'Factura', icon:'💵',
+    fields:['cliente','total','metodoPago','estado'],
+    labels:['Cliente','Total ($)','Método de Pago','Estado'],
+    types:['text','number','text','text'],
+    required:[true,true,true,true],
     render(item, i) {
+      const statusDisplay = item._cancelado ? `<span class="badge badge-rose"><span class="badge-dot"></span>Cancelado</span>` : estadoBadge(item.estado);
       return `
         <td><span class="cell-main">${i}</span></td>
         <td><div class="cell-main">${esc(item.cliente)}</div></td>
         <td><strong>$${fmt(item.total)}</strong></td>
         <td>${esc(item.metodoPago)}</td>
-        <td>${estadoBadge(item.estado)}</td>`;
+        <td>${statusDisplay}</td>
+        <td>${ownerChip(item._createdBy)}</td>`;
     }
   },
   servicios: {
-    title: 'Servicio', icon: '🩺',
-    topbar: ['Catálogo de Servicios', 'Servicios clínicos y tarifas disponibles'],
-    fields:  ['nombreServicio','duracion','costo','sala'],
-    labels:  ['Nombre del Servicio','Duración','Costo (MXN)','Sala'],
-    types:   ['text','text','number','text'],
-    required: [true, true, true, false],
+    title:'Servicio', icon:'🩺',
+    fields:['nombreServicio','duracion','costo','sala'],
+    labels:['Nombre del Servicio','Duración','Costo (MXN)','Sala'],
+    types:['text','text','number','text'],
+    required:[true,true,true,false],
     render(item, i) {
+      const cancelBadge = item._cancelado ? `<span class="badge badge-rose"><span class="badge-dot"></span>Suspendido</span>` : '';
       return `
         <td><span class="cell-main">${i}</span></td>
-        <td><div class="cell-main">${esc(item.nombreServicio)}</div></td>
+        <td><div class="cell-main">${esc(item.nombreServicio)}</div>${cancelBadge}</td>
         <td>${esc(item.duracion)}</td>
         <td>$${fmt(item.costo)}</td>
-        <td><span class="badge badge-blue"><span class="badge-dot"></span>${esc(item.sala||'—')}</span></td>`;
+        <td><span class="badge badge-blue"><span class="badge-dot"></span>${esc(item.sala||'—')}</span></td>
+        <td>${ownerChip(item._createdBy)}</td>`;
     }
   }
 };
 
-/* ═══════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════ */
-function esc(str) {
-  if (!str && str !== 0) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function fmt(n) {
-  return Number(n||0).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-}
-function formatDate(d) {
-  if (!d) return '—';
-  try { return new Date(d + 'T12:00:00').toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' }); }
-  catch { return d; }
-}
-function speciesBadge(esp) {
-  const map = { 'Perro':'badge-blue','Gato':'badge-amber','Ave':'badge-green','Conejo':'badge-slate','Reptil':'badge-green' };
-  const cls = map[esp] || 'badge-slate';
-  return `<span class="badge ${cls}"><span class="badge-dot"></span>${esc(esp)}</span>`;
-}
-function estadoBadge(est) {
-  const cls = est==='Pagado' ? 'badge-green' : est==='Cancelado' ? 'badge-rose' : 'badge-amber';
-  return `<span class="badge ${cls}"><span class="badge-dot"></span>${esc(est)}</span>`;
-}
-function turnoBadge(t) {
-  const cls = t==='Mañana' ? 'badge-blue' : t==='Tarde' ? 'badge-amber' : 'badge-green';
-  return `<span class="badge ${cls}"><span class="badge-dot"></span>${esc(t)}</span>`;
-}
-
-/* ═══════════════════════════════════════════════
-   DATA STORE
-═══════════════════════════════════════════════ */
 const cache = {};
 
-/* ═══════════════════════════════════════════════
-   MOBILE MENU
-═══════════════════════════════════════════════ */
-function toggleMobileMenu() {
-  const sb  = document.getElementById('sidebar');
-  const ov  = document.getElementById('sidebarOverlay');
-  const btn = document.getElementById('menuBtn');
-  const open = sb.classList.toggle('open');
-  ov.classList.toggle('open', open);
-  btn.setAttribute('aria-expanded', open);
-  if (open) btn.setAttribute('aria-label', 'Cerrar menú');
-  else btn.setAttribute('aria-label', 'Abrir menú');
-}
-function closeMobileMenu() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOverlay').classList.remove('open');
-  document.getElementById('menuBtn').setAttribute('aria-expanded', 'false');
-  document.getElementById('menuBtn').setAttribute('aria-label', 'Abrir menú');
+function renderTable(col) {
+  const db   = getDB();
+  const data  = db[col] || [];
+  cache[col]  = data;
+  updateBadge(col, data.length);
+  applyRender(col, data);
 }
 
-/* ═══════════════════════════════════════════════
-   NAVIGATION
-═══════════════════════════════════════════════ */
-let currentSection = 'dashboard';
-function showSection(id) {
-  currentSection = id;
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b => {
-    b.classList.remove('active');
-    b.removeAttribute('aria-current');
-  });
-  document.getElementById('sec-' + id).classList.add('active');
-  const navItem = document.getElementById('nav-' + id);
-  navItem.classList.add('active');
-  navItem.setAttribute('aria-current', 'page');
-
-  if (id !== 'dashboard') {
-    const cfg = config[id];
-    document.getElementById('topbar-title').textContent = cfg.topbar[0];
-    document.getElementById('topbar-meta').textContent = cfg.topbar[1];
-    loadData(id);
-  } else {
-    document.getElementById('topbar-title').textContent = 'Dashboard General';
-    document.getElementById('topbar-meta').textContent = 'Resumen del sistema clínico';
-    loadDashboard();
-  }
-
-  // Close mobile menu
-  if (window.innerWidth < 768) closeMobileMenu();
-
-  // Focus main content for accessibility
-  document.getElementById('mainContent').focus();
-}
-
-/* ═══════════════════════════════════════════════
-   LOAD DATA
-═══════════════════════════════════════════════ */
-async function loadData(col) {
-  try {
-    const res  = await fetch('/api/' + col);
-    if (!res.ok) throw new Error(res.status);
-    const data = await res.json();
-    cache[col] = data;
-    updateBadge(col, data.length);
-    renderTable(col, data);
-  } catch (e) {
-    console.error('Error loading', col, e);
-    const tbody = document.getElementById('tbody-' + col);
-    if (tbody) tbody.innerHTML = `<tr><td colspan="10">${emptyState('Error', 'No se pudo conectar al servidor. Verifica tu conexión.')}</td></tr>`;
-  }
-}
-
-function renderTable(col, data) {
+function applyRender(col, data) {
   const tbody = document.getElementById('tbody-' + col);
   if (!tbody) return;
   if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="10">${emptyState('Sin registros', 'No hay datos aún. ¡Agrega el primero!')}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10">${emptyState('Sin registros','No hay datos aún. ¡Agrega el primero!')}</td></tr>`;
     return;
   }
-  tbody.innerHTML = data.map((item, idx) => `
-    <tr>
-      ${config[col].render(item, idx + 1)}
-      <td>
-        <div class="action-cell">
-          <button class="btn-icon btn-edit" onclick='editItem("${col}", ${JSON.stringify(item).replace(/'/g,"&#39;")})'
-            aria-label="Editar ${esc(item.nombre || item.nombreServicio || item.cliente || item.producto || item.mascota || '')}">
-            ✏️
-          </button>
-          <button class="btn-icon btn-delete" onclick='deleteItem("${col}", "${item._id}")'
-            aria-label="Eliminar registro">
-            🗑️
-          </button>
-        </div>
-      </td>
-    </tr>`).join('');
+  tbody.innerHTML = data.map((item, idx) => {
+    const actions = buildActions(col, item);
+    return `<tr>${cols[col].render(item, idx + 1)}<td><div class="action-cell">${actions}</div></td></tr>`;
+  }).join('');
 }
 
-function emptyState(title, msg) {
-  return `<div class="empty-state"><div class="empty-icon">📭</div><h3>${esc(title)}</h3><p>${esc(msg)}</p></div>`;
+function buildActions(col, item) {
+  let html = '';
+  const myRecord = isMyRecord(item);
+  const isCancelled = !!item._cancelado;
+
+  if (isAdmin()) {
+    // Admin: editar + eliminar + cancelar (si aplica)
+    if (!isCancelled) {
+      html += `<button class="btn-icon btn-edit" onclick='editItem("${col}", ${JSON.stringify(item).replace(/'/g,"&#39;")})' title="Editar">✏️</button>`;
+    }
+    if (!isCancelled && col !== 'pacientes' && col !== 'veterinarios') {
+      html += `<button class="btn-icon btn-cancel" onclick='cancelItem("${col}","${item._id}")' title="Cancelar">🚫</button>`;
+    }
+    html += `<button class="btn-icon btn-delete" onclick='deleteItem("${col}","${item._id}")' title="Eliminar">🗑️</button>`;
+  } else {
+    // Usuario: solo cancelar SUS propios registros (no eliminar)
+    if (myRecord && !isCancelled) {
+      html += `<button class="btn-icon btn-cancel" onclick='cancelItem("${col}","${item._id}")' title="Cancelar mi registro">🚫</button>`;
+    }
+    if (isCancelled && myRecord) {
+      html += `<span style="font-size:0.72rem;color:var(--muted);padding:0 4px;">Cancelado</span>`;
+    }
+    if (!myRecord) {
+      html += `<span style="font-size:0.72rem;color:var(--subtle);padding:0 4px;">—</span>`;
+    }
+  }
+  return html || '<span style="font-size:0.72rem;color:var(--subtle);">—</span>';
 }
 
-function updateBadge(col, n) {
-  const el = document.getElementById('badge-' + col);
-  if (el) { el.textContent = n; el.setAttribute('aria-label', n + ' registros'); }
-}
+/* ══════════════════════════════════
+   CRUD
+══════════════════════════════════ */
+function generateId() { return 'r-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7); }
 
-/* ═══════════════════════════════════════════════
-   FILTER
-═══════════════════════════════════════════════ */
-function filterTable(col, q) {
-  if (!cache[col]) return;
-  const lq = q.toLowerCase().trim();
-  const filtered = !lq ? cache[col] : cache[col].filter(item =>
-    Object.values(item).some(v => String(v).toLowerCase().includes(lq))
-  );
-  renderTable(col, filtered);
-}
+document.getElementById('universalForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const col  = document.getElementById('field-col').value;
+  const id   = document.getElementById('field-id').value;
+  const body = {};
+  const btn  = document.getElementById('submitBtn');
 
-/* ═══════════════════════════════════════════════
-   DASHBOARD
-═══════════════════════════════════════════════ */
-async function loadDashboard() {
+  cols[col].fields.forEach(f => {
+    const el = document.getElementById('input-' + f);
+    if (el) body[f] = el.value;
+  });
+
+  btn.disabled   = true;
+  btn.textContent = '⏳ Guardando…';
+
   try {
-    const [pacientes, citas, facturas, inventario] = await Promise.all([
-      fetch('/api/pacientes').then(r => r.json()).catch(() => []),
-      fetch('/api/citas').then(r => r.json()).catch(() => []),
-      fetch('/api/facturas').then(r => r.json()).catch(() => []),
-      fetch('/api/inventario').then(r => r.json()).catch(() => []),
-    ]);
-
-    // Stats
-    document.getElementById('stat-pacientes').textContent = pacientes.length;
-    document.getElementById('stat-pacientes-sub').textContent = `${pacientes.length} mascota${pacientes.length!==1?'s':''} activas`;
-    document.getElementById('stat-pacientes-badge').textContent = pacientes.length;
-
-    document.getElementById('stat-citas').textContent = citas.length;
-    document.getElementById('stat-citas-sub').textContent = `${citas.length} cita${citas.length!==1?'s':''} programadas`;
-    document.getElementById('stat-citas-badge').textContent = citas.length;
-
-    const total   = facturas.reduce((s, f) => s + Number(f.total||0), 0);
-    const pagadas = facturas.filter(f => f.estado === 'Pagado').length;
-    document.getElementById('stat-ingresos').textContent = '$' + fmt(total);
-    document.getElementById('stat-ingresos-sub').textContent = pagadas + ' factura' + (pagadas!==1?'s':'') + ' pagada' + (pagadas!==1?'s':'');
-    document.getElementById('stat-ingresos-badge').textContent = pagadas + ' pagadas';
-
-    const bajos = inventario.filter(i => Number(i.stock) < 10);
-    document.getElementById('stat-productos').textContent = inventario.length;
-    document.getElementById('stat-productos-sub').textContent = bajos.length > 0 ? `⚠️ ${bajos.length} con stock bajo` : 'Stock en buen nivel';
-    const prodBadge = document.getElementById('stat-productos-badge');
-    prodBadge.textContent = bajos.length > 0 ? `${bajos.length} alertas` : 'OK';
-    prodBadge.className = 'stat-trend ' + (bajos.length > 0 ? 'trend-warn' : 'trend-up');
-
-    // Latest citas
-    const citasList = document.getElementById('dash-citas-list');
-    document.getElementById('dash-citas-count').textContent = citas.length;
-    if (citas.length) {
-      citasList.innerHTML = citas.slice(-6).reverse().map(c => `
-        <div class="activity-item" role="listitem">
-          <div class="activity-bullet bullet-green" aria-hidden="true"></div>
-          <div>
-            <div class="activity-main">${esc(c.mascota)} — <strong>${esc(c.motivo)}</strong></div>
-            <div class="activity-sub">${formatDate(c.fecha)} · ${esc(c.hora)} · ${esc(c.veterinario)}</div>
-          </div>
-        </div>`).join('');
+    const db = getDB();
+    if (id) {
+      // Editar (solo admin puede editar)
+      if (!isAdmin()) { showToast('⛔ Sin permisos para editar.','error'); return; }
+      const idx = db[col].findIndex(r => r._id === id);
+      if (idx > -1) Object.assign(db[col][idx], body);
     } else {
-      citasList.innerHTML = `<div class="panel-empty"><div class="panel-empty-icon">📅</div>Sin citas registradas</div>`;
+      // Nuevo registro
+      const newItem = { _id: generateId(), ...body, _createdBy: currentUser.id, _createdAt: new Date().toISOString(), _cancelado: false };
+      db[col].push(newItem);
     }
+    saveDB(db);
+    closeModal();
+    renderTable(col);
+    if (currentSection === 'dashboard') loadDashboard();
+    showToast(id ? '✅ Registro actualizado' : '✅ Registro guardado correctamente');
+  } catch(err) {
+    showToast('❌ Error al guardar: ' + err.message, 'error');
+  } finally {
+    btn.disabled    = false;
+    btn.innerHTML   = '💾 Guardar';
+  }
+});
 
-    // Stock alerts
-    const stockList = document.getElementById('dash-stock-list');
-    document.getElementById('dash-stock-count').textContent = bajos.length;
-    if (bajos.length) {
-      stockList.innerHTML = bajos.map(p => {
-        const st = Number(p.stock);
-        const color = st <= 0 ? 'bullet-rose' : st < 5 ? 'bullet-rose' : 'bullet-amber';
-        return `
-          <div class="activity-item" role="listitem">
-            <div class="activity-bullet ${color}" aria-hidden="true"></div>
-            <div>
-              <div class="activity-main"><strong>${esc(p.producto)}</strong></div>
-              <div class="activity-sub">Stock: <span class="${st<5?'stock-critical':'stock-low'}">${st} unidades</span> · $${fmt(p.precio)} c/u</div>
-            </div>
-          </div>`;
-      }).join('');
-    } else {
-      stockList.innerHTML = `<div class="panel-empty"><div class="panel-empty-icon">✅</div>Todo el inventario tiene stock suficiente</div>`;
-    }
-
-    // Cache & badges
-    Object.assign(cache, { pacientes, citas, facturas, inventario });
-    updateBadge('pacientes', pacientes.length);
-    updateBadge('citas', citas.length);
-    updateBadge('facturas', facturas.length);
-    updateBadge('inventario', inventario.length);
-
-  } catch (e) { console.error('Dashboard error:', e); }
+async function deleteItem(col, id) {
+  if (!isAdmin()) { showToast('⛔ Solo administradores pueden eliminar.','error'); return; }
+  if (!confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')) return;
+  const db  = getDB();
+  db[col]   = db[col].filter(r => r._id !== id);
+  saveDB(db);
+  renderTable(col);
+  if (currentSection === 'dashboard') loadDashboard();
+  showToast('🗑️ Registro eliminado');
 }
 
-/* ═══════════════════════════════════════════════
+function cancelItem(col, id) {
+  const db   = getDB();
+  const item = db[col].find(r => r._id === id);
+  if (!item) return;
+  // Verificar permisos: admin siempre puede; usuario solo sus propios
+  if (!isAdmin() && item._createdBy !== currentUser.id) {
+    showToast('⛔ Solo puedes cancelar tus propios registros.','error'); return;
+  }
+  if (item._cancelado) { showToast('Ya está cancelado.','warn'); return; }
+  if (!confirm('¿Marcar este registro como cancelado?')) return;
+  item._cancelado = true;
+  item._cancelledBy = currentUser.id;
+  item._cancelledAt = new Date().toISOString();
+  saveDB(db);
+  renderTable(col);
+  showToast('🚫 Registro marcado como cancelado');
+}
+
+function editItem(col, item) {
+  if (!isAdmin()) { showToast('⛔ Solo administradores pueden editar.','error'); return; }
+  currentSection = col;
+  openModal(col, item);
+}
+
+/* ══════════════════════════════════
    MODAL
-═══════════════════════════════════════════════ */
+══════════════════════════════════ */
 function openModal(col, data = null) {
-  const cfg = config[col];
-  document.getElementById('modalIcon').textContent = data ? '✏️' : '➕';
-  document.getElementById('modalTitle').textContent = (data ? 'Editar' : 'Nuevo') + ' ' + cfg.title;
-  document.getElementById('modalSubtitle').textContent = data ? 'Modifica los datos del registro' : 'Completa los campos para agregar';
+  const cfg = cols[col];
+  document.getElementById('modalIcon').textContent      = data ? '✏️' : '➕';
+  document.getElementById('modalTitle').textContent     = (data ? 'Editar ' : 'Nuevo ') + cfg.title;
+  document.getElementById('modalSubtitle').textContent  = data ? 'Modifica los datos del registro' : 'Completa los campos para agregar';
   document.getElementById('field-id').value  = data ? data._id : '';
   document.getElementById('field-col').value = col;
 
@@ -1608,10 +1179,10 @@ function openModal(col, data = null) {
     const val  = data ? (data[field] != null ? data[field] : '') : '';
     const type = cfg.types[i];
     const req  = cfg.required[i] !== false;
-    const full = cfg.fields.length % 2 !== 0 && i === cfg.fields.length - 1 ? ' full' : '';
+    const isLast = cfg.fields.length % 2 !== 0 && i === cfg.fields.length - 1;
     html += `
-      <div class="form-group${full}">
-        <label for="input-${field}">${esc(cfg.labels[i])}${req ? '<span aria-hidden="true">*</span>' : ''}</label>
+      <div class="form-group${isLast ? ' full' : ''}">
+        <label for="input-${field}">${esc(cfg.labels[i])}${req ? '<span>*</span>' : ''}</label>
         <input type="${type}" id="input-${field}" name="${field}" value="${esc(val)}"
           ${req ? 'required' : ''} ${type==='number' ? 'min="0"' : ''}
           placeholder="${esc(cfg.labels[i])}">
@@ -1619,8 +1190,6 @@ function openModal(col, data = null) {
   });
   document.getElementById('formFields').innerHTML = html;
   document.getElementById('mainModal').classList.add('open');
-
-  // Focus first input
   setTimeout(() => {
     const first = document.getElementById('input-' + cfg.fields[0]);
     if (first) first.focus();
@@ -1632,126 +1201,256 @@ function closeModal() {
   document.getElementById('universalForm').reset();
 }
 
-/* ═══════════════════════════════════════════════
-   CRUD
-═══════════════════════════════════════════════ */
-document.getElementById('universalForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const col    = document.getElementById('field-col').value;
-  const id     = document.getElementById('field-id').value;
-  const body   = {};
-  const btn    = document.getElementById('submitBtn');
+/* ══════════════════════════════════
+   FILTER
+══════════════════════════════════ */
+function filterTable(col, q) {
+  if (!cache[col]) { renderTable(col); }
+  const lq = q.toLowerCase().trim();
+  const src = cache[col] || [];
+  const filtered = !lq ? src : src.filter(item =>
+    Object.values(item).some(v => String(v).toLowerCase().includes(lq))
+  );
+  applyRender(col, filtered);
+}
 
-  config[col].fields.forEach(f => {
-    const el = document.getElementById('input-' + f);
-    if (el) body[f] = el.value;
+/* ══════════════════════════════════
+   DASHBOARD
+══════════════════════════════════ */
+function loadDashboard() {
+  const db = getDB();
+  const { pacientes, citas, facturas, inventario } = db;
+
+  document.getElementById('stat-pacientes').textContent = pacientes.length;
+  document.getElementById('stat-pacientes-sub').textContent = `${pacientes.length} mascota${pacientes.length!==1?'s':''} registradas`;
+  document.getElementById('stat-pacientes-badge').textContent = pacientes.length;
+
+  document.getElementById('stat-citas').textContent = citas.length;
+  document.getElementById('stat-citas-sub').textContent = `${citas.length} cita${citas.length!==1?'s':''} en agenda`;
+  document.getElementById('stat-citas-badge').textContent = citas.length;
+
+  const total   = facturas.reduce((s, f) => s + Number(f.total||0), 0);
+  const pagadas = facturas.filter(f => f.estado === 'Pagado').length;
+  document.getElementById('stat-ingresos').textContent = '$' + fmt(total);
+  document.getElementById('stat-ingresos-sub').textContent = pagadas + ' factura' + (pagadas!==1?'s':'') + ' pagada' + (pagadas!==1?'s':'');
+  document.getElementById('stat-ingresos-badge').textContent = pagadas + ' pagadas';
+
+  const bajos = inventario.filter(i => Number(i.stock) < 10);
+  document.getElementById('stat-productos').textContent = inventario.length;
+  document.getElementById('stat-productos-sub').textContent = bajos.length > 0 ? `⚠️ ${bajos.length} con stock bajo` : 'Stock en buen nivel';
+  const prodBadge = document.getElementById('stat-productos-badge');
+  prodBadge.textContent = bajos.length > 0 ? `${bajos.length} alertas` : 'OK';
+  prodBadge.className = 'stat-trend ' + (bajos.length > 0 ? 'trend-warn' : 'trend-up');
+
+  const citasList = document.getElementById('dash-citas-list');
+  document.getElementById('dash-citas-count').textContent = citas.length;
+  if (citas.length) {
+    citasList.innerHTML = citas.slice(-6).reverse().map(c => `
+      <div class="activity-item">
+        <div class="activity-bullet ${c._cancelado ? 'bullet-rose' : 'bullet-green'}"></div>
+        <div>
+          <div class="activity-main">${esc(c.mascota)} — <strong>${esc(c.motivo)}</strong>${c._cancelado ? ' <span style="color:var(--rose);font-size:0.72rem;">[Cancelado]</span>' : ''}</div>
+          <div class="activity-sub">${formatDate(c.fecha)} · ${esc(c.hora)} · ${esc(c.veterinario)}</div>
+        </div>
+      </div>`).join('');
+  } else {
+    citasList.innerHTML = `<div class="panel-empty"><div class="panel-empty-icon">📅</div>Sin citas registradas</div>`;
+  }
+
+  const stockList = document.getElementById('dash-stock-list');
+  document.getElementById('dash-stock-count').textContent = bajos.length;
+  if (bajos.length) {
+    stockList.innerHTML = bajos.map(p => {
+      const st = Number(p.stock);
+      const color = st <= 0 ? 'bullet-rose' : st < 5 ? 'bullet-rose' : 'bullet-amber';
+      return `<div class="activity-item">
+        <div class="activity-bullet ${color}"></div>
+        <div>
+          <div class="activity-main"><strong>${esc(p.producto)}</strong></div>
+          <div class="activity-sub">Stock: <span class="${st<5?'stock-critical':'stock-low'}">${st} uds</span> · $${fmt(p.precio)} c/u</div>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    stockList.innerHTML = `<div class="panel-empty"><div class="panel-empty-icon">✅</div>Todo el inventario tiene stock suficiente</div>`;
+  }
+
+  updateAllBadges();
+}
+
+/* ══════════════════════════════════
+   USERS PANEL (admin only)
+══════════════════════════════════ */
+function renderUsers() {
+  if (!isAdmin()) return;
+  const db = getDB();
+  const users = db.users || [];
+  updateBadge('usuarios', users.length);
+  const container = document.getElementById('users-list-body');
+  if (!users.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><h3>Sin usuarios</h3><p>No hay cuentas registradas.</p></div>`;
+    return;
+  }
+  container.innerHTML = users.map(u => {
+    const isMe = u.id === currentUser.id;
+    const initials = u.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const avatarCls = u.role === 'admin' ? 'avatar-admin' : 'avatar-user';
+    const roleBadge = u.role === 'admin'
+      ? `<span class="badge badge-amber"><span class="badge-dot"></span>Administrador</span>`
+      : `<span class="badge badge-blue"><span class="badge-dot"></span>Usuario</span>`;
+    const deleteBtn = (!isMe && isAdmin())
+      ? `<button class="btn-icon btn-delete" onclick='deleteUser("${u.id}")' title="Eliminar usuario">🗑️</button>`
+      : `<span class="badge badge-slate" style="font-size:0.7rem;">Tú</span>`;
+    const toggleBtn = (!isMe && isAdmin())
+      ? `<button class="btn-icon btn-edit" onclick='toggleUserRole("${u.id}")' title="Cambiar rol">🔄</button>`
+      : '';
+    return `
+      <div class="user-list-item">
+        <div class="user-list-avatar ${avatarCls}">${initials}</div>
+        <div class="user-list-info">
+          <div class="user-list-name">${esc(u.nombre)} <span style="color:var(--muted);font-weight:400;">@${esc(u.username)}</span></div>
+          <div class="user-list-meta">${roleBadge} · Registrado ${formatDate(u.createdAt)}</div>
+        </div>
+        <div class="user-list-actions">${toggleBtn}${deleteBtn}</div>
+      </div>`;
+  }).join('');
+}
+
+function deleteUser(uid) {
+  if (!isAdmin()) return;
+  if (uid === currentUser.id) { showToast('⛔ No puedes eliminar tu propia cuenta.','error'); return; }
+  if (!confirm('¿Eliminar este usuario del sistema?')) return;
+  const db = getDB();
+  db.users = db.users.filter(u => u.id !== uid);
+  saveDB(db);
+  renderUsers();
+  showToast('🗑️ Usuario eliminado');
+}
+
+function toggleUserRole(uid) {
+  if (!isAdmin()) return;
+  const db   = getDB();
+  const user = db.users.find(u => u.id === uid);
+  if (!user) return;
+  user.role  = user.role === 'admin' ? 'usuario' : 'admin';
+  saveDB(db);
+  renderUsers();
+  showToast(`🔄 Rol cambiado a: ${user.role === 'admin' ? 'Administrador' : 'Usuario'}`);
+}
+
+/* ══════════════════════════════════
+   HELPERS
+══════════════════════════════════ */
+function esc(str) {
+  if (!str && str !== 0) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmt(n) { return Number(n||0).toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:2}); }
+function formatDate(d) {
+  if (!d) return '—';
+  try { return new Date(d+'T12:00:00').toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'}); }
+  catch { return d; }
+}
+function speciesBadge(esp) {
+  const map={'Perro':'badge-blue','Gato':'badge-amber','Ave':'badge-green','Conejo':'badge-slate','Reptil':'badge-green'};
+  return `<span class="badge ${map[esp]||'badge-slate'}"><span class="badge-dot"></span>${esc(esp)}</span>`;
+}
+function estadoBadge(est) {
+  const cls = est==='Pagado'?'badge-green':est==='Cancelado'?'badge-rose':'badge-amber';
+  return `<span class="badge ${cls}"><span class="badge-dot"></span>${esc(est)}</span>`;
+}
+function turnoBadge(t) {
+  const cls = t==='Mañana'?'badge-blue':t==='Tarde'?'badge-amber':'badge-green';
+  return `<span class="badge ${cls}"><span class="badge-dot"></span>${esc(t)}</span>`;
+}
+function ownerChip(uid) {
+  const db   = getDB();
+  const user = db.users.find(u => u.id === uid);
+  if (!user) return '<span class="badge badge-slate"><span class="badge-dot"></span>—</span>';
+  const cls = user.role === 'admin' ? 'badge-amber' : 'badge-blue';
+  return `<span class="badge ${cls}" title="${esc(user.nombre)}"><span class="badge-dot"></span>${esc(user.username)}</span>`;
+}
+function emptyState(title, msg) {
+  return `<div class="empty-state"><div class="empty-icon">📭</div><h3>${esc(title)}</h3><p>${esc(msg)}</p></div>`;
+}
+function updateBadge(col, n) {
+  const el = document.getElementById('badge-' + col);
+  if (el) el.textContent = n;
+}
+function updateAllBadges() {
+  const db = getDB();
+  ['pacientes','citas','veterinarios','inventario','facturas','servicios'].forEach(col => {
+    updateBadge(col, (db[col]||[]).length);
   });
-
-  btn.disabled = true;
-  btn.textContent = '⏳ Guardando…';
-
-  const method = id ? 'PUT'  : 'POST';
-  const url    = id ? `/api/${col}/${id}` : `/api/${col}`;
-
-  try {
-    const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (res.ok) {
-      closeModal();
-      await loadData(col);
-      if (currentSection === 'dashboard') loadDashboard();
-      showToast(id ? '✅ Registro actualizado correctamente' : '✅ Registro guardado correctamente');
-    } else {
-      const err = await res.json().catch(() => ({}));
-      showToast('❌ ' + (err.error || 'Error al guardar el registro'), 'error');
-    }
-  } catch {
-    showToast('❌ Sin conexión al servidor', 'error');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<span>💾</span> Guardar en MongoDB';
-  }
-});
-
-async function deleteItem(col, id) {
-  if (!confirm('¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer.')) return;
-  try {
-    const res = await fetch(`/api/${col}/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-      await loadData(col);
-      showToast('🗑️ Registro eliminado');
-    } else {
-      showToast('❌ No se pudo eliminar el registro', 'error');
-    }
-  } catch {
-    showToast('❌ Error de conexión', 'error');
-  }
+  if (isAdmin()) updateBadge('usuarios', (db.users||[]).length);
 }
 
-function editItem(col, item) {
-  currentSection = col;
-  openModal(col, item);
+/* ══════════════════════════════════
+   MOBILE MENU
+══════════════════════════════════ */
+function toggleMobileMenu() {
+  const sb  = document.getElementById('sidebar');
+  const ov  = document.getElementById('sidebarOverlay');
+  const btn = document.getElementById('menuBtn');
+  const open = sb.classList.toggle('open');
+  ov.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+}
+function closeMobileMenu() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════
    TOAST
-═══════════════════════════════════════════════ */
-function showToast(msg, type = 'success') {
+══════════════════════════════════ */
+function showToast(msg, type='success') {
   const tc    = document.getElementById('toastContainer');
   const toast = document.createElement('div');
-  toast.className = 'toast' + (type === 'error' ? ' error' : type === 'warn' ? ' warn' : '');
+  toast.className  = 'toast' + (type==='error' ? ' error' : type==='warn' ? ' warn' : '');
   toast.textContent = msg;
-  toast.setAttribute('role', 'alert');
   tc.appendChild(toast);
   setTimeout(() => {
-    toast.style.opacity = '0';
+    toast.style.opacity   = '0';
     toast.style.transform = 'translateX(24px)';
     toast.style.transition = 'all 0.3s ease';
     setTimeout(() => toast.remove(), 320);
   }, 3500);
 }
 
-/* ═══════════════════════════════════════════════
-   KEYBOARD SUPPORT
-═══════════════════════════════════════════════ */
-document.addEventListener('keydown', (e) => {
+/* ══════════════════════════════════
+   KEYBOARD
+══════════════════════════════════ */
+document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    const modal = document.getElementById('mainModal');
-    if (modal.classList.contains('open')) closeModal();
-    else if (window.innerWidth < 768) closeMobileMenu();
+    if (document.getElementById('mainModal').classList.contains('open')) closeModal();
+    else closeMobileMenu();
   }
 });
-
-// Close modal on backdrop click
-document.getElementById('mainModal').addEventListener('click', (e) => {
+document.getElementById('mainModal').addEventListener('click', e => {
   if (e.target === document.getElementById('mainModal')) closeModal();
 });
+// Enter para login/registro
+document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('reg-pass').addEventListener('keydown', e => { if(e.key==='Enter') doRegister(); });
 
-// Trap focus inside modal when open
-document.getElementById('mainModal').addEventListener('keydown', (e) => {
-  if (e.key !== 'Tab') return;
-  const modal     = document.getElementById('modal-content') || document.querySelector('.modal-content');
-  const focusable = document.getElementById('mainModal').querySelectorAll('button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
-  const first     = focusable[0];
-  const last      = focusable[focusable.length - 1];
-  if (e.shiftKey) { if (document.activeElement === first) { last.focus(); e.preventDefault(); } }
-  else            { if (document.activeElement === last)  { first.focus(); e.preventDefault(); } }
-});
-
-/* ═══════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════ */
+/* ══════════════════════════════════
+   INIT — Restaurar sesión
+══════════════════════════════════ */
 window.addEventListener('load', () => {
-  loadDashboard();
-  ['veterinarios','servicios'].forEach(col => {
-    fetch('/api/' + col)
-      .then(r => r.json())
-      .then(d => updateBadge(col, d.length))
-      .catch(() => {});
-  });
+  // Asegurar que la DB existe con la cuenta admin
+  getDB();
+  // Intentar restaurar sesión activa
+  const ses = getSession();
+  if (ses) {
+    // Verificar que el usuario aún existe en DB
+    const db   = getDB();
+    const user = db.users.find(u => u.id === ses.id);
+    if (user) { loginSuccess(user); return; }
+  }
+  // Mostrar pantalla de auth
+  document.getElementById('authScreen').style.display = '';
+  document.getElementById('appRoot').style.display    = 'none';
 });
 </script>
 </body>
